@@ -1,10 +1,14 @@
 package server
 
 import (
+	hospitalController "github.com/ahargunyllib/thera-be/internal/app/hospital/controller"
+	hospitalRepo "github.com/ahargunyllib/thera-be/internal/app/hospital/repository"
+	hospitalSvc "github.com/ahargunyllib/thera-be/internal/app/hospital/service"
 	"github.com/ahargunyllib/thera-be/internal/middlewares"
 	errorhandler "github.com/ahargunyllib/thera-be/pkg/helpers/http/error_handler"
 	"github.com/ahargunyllib/thera-be/pkg/helpers/http/response"
 	"github.com/ahargunyllib/thera-be/pkg/log"
+	"github.com/ahargunyllib/thera-be/pkg/validator"
 	"github.com/bytedance/sonic"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jmoiron/sqlx"
@@ -66,6 +70,8 @@ func (s *httpServer) MountMiddlewares() {
 }
 
 func (s *httpServer) MountRoutes(db *sqlx.DB, redis *redis.Client) {
+	validator := validator.Validator
+
 	s.app.Get("/", func(c *fiber.Ctx) error {
 		return response.SendResponse(c, fiber.StatusOK, "Thera BE is running")
 	})
@@ -76,6 +82,12 @@ func (s *httpServer) MountRoutes(db *sqlx.DB, redis *redis.Client) {
 	v1.Get("/", func(c *fiber.Ctx) error {
 		return response.SendResponse(c, fiber.StatusOK, "Thera BE is running")
 	})
+
+	hospitalRepository := hospitalRepo.NewHospitalRepository(db)
+
+	hospitalService := hospitalSvc.NewHospitalService(hospitalRepository, validator)
+
+	hospitalController.InitHospitalController(v1, hospitalService)
 
 	s.app.Use(func(c *fiber.Ctx) error {
 		return c.SendFile("./web/not-found.html")

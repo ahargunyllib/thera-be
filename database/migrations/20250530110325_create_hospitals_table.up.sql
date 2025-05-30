@@ -1,0 +1,20 @@
+CREATE TABLE hospitals (
+		id SERIAL PRIMARY KEY,
+		name VARCHAR(255) NOT NULL,
+		address TEXT NOT NULL,
+		phone VARCHAR(20) NULL,
+		email VARCHAR(100) NULL,
+		website VARCHAR(255) NULL,
+		type INT NOT NULL DEFAULT(1),
+		status INT NOT NULL DEFAULT(1),
+		latitude DECIMAL(9, 6) NOT NULL,
+		longitude DECIMAL(9, 6) NOT NULL,
+		year_established INT NOT NULL,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TRIGGER update_hospital_timestamp
+BEFORE UPDATE ON hospitals
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
