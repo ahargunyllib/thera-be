@@ -2,11 +2,13 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"strings"
 
 	"github.com/ahargunyllib/thera-be/domain/dto"
 	"github.com/ahargunyllib/thera-be/domain/entity"
+	"github.com/ahargunyllib/thera-be/domain/errx"
 	"github.com/ahargunyllib/thera-be/pkg/helpers/pgerror"
 	"github.com/jackc/pgx/v5/pgconn"
 )
@@ -89,6 +91,10 @@ func (hr *hospitalRepository) GetHospitalByID(ctx context.Context, id int) (*ent
 
 	err := hr.db.GetContext(ctx, &hospital, qb.String(), id)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, errx.ErrHospitalNotFound
+		}
+
 		return nil, err
 	}
 
