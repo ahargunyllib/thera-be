@@ -1,0 +1,11 @@
+<email>,<full_name>,<password>,<role>,<hospital_id>
+admin1@hospital1.com,Admin Hospital 1,12345678,1,1
+admin2@hospital2.com,Admin Hospital 2,12345678,1,2
+admin3@hospital3.com,Admin Hospital 3,12345678,1,3
+admin4@hospital4.com,Admin Hospital 4,12345678,1,4
+admin5@hospital5.com,Admin Hospital 5,12345678,1,5
+admin6@hospital6.com,Admin Hospital 6,12345678,1,6
+admin7@hospital7.com,Admin Hospital 7,12345678,1,7
+admin8@hospital8.com,Admin Hospital 8,12345678,1,8
+admin9@hospital9.com,Admin Hospital 9,12345678,1,9
+admin10@hospital10.com,Admin Hospital 10,12345678,1,10

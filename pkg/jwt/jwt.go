@@ -11,13 +11,15 @@ import (
 type CustomJwtInterface interface {
 	Create(
 		userID uuid.UUID,
+		role string,
 	) (string, error)
 	Decode(tokenString string, claims *Claims) error
 }
 
 type Claims struct {
 	jwt.RegisteredClaims
-	UserID        uuid.UUID                  `json:"user_id"`
+	UserID uuid.UUID `json:"user_id"`
+	Role   string    `json:"role"`
 }
 
 type CustomJwtStruct struct {
@@ -36,6 +38,7 @@ func getJwt() CustomJwtInterface {
 
 func (j *CustomJwtStruct) Create(
 	userID uuid.UUID,
+	role string,
 ) (string, error) {
 	claims := Claims{
 		RegisteredClaims: jwt.RegisteredClaims{
@@ -47,7 +50,8 @@ func (j *CustomJwtStruct) Create(
 			NotBefore: jwt.NewNumericDate(time.Now()),
 			ID:        uuid.New().String(),
 		},
-		UserID:        userID,
+		UserID: userID,
+		Role:   role,
 	}
 
 	unsignedJWT := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

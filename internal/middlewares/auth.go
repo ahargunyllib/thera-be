@@ -94,3 +94,18 @@ func (m *Middleware) RequireAuth() fiber.Handler {
 		return ctx.Next()
 	}
 }
+
+func (m *Middleware) RequireRole(role string) fiber.Handler {
+	return func(ctx *fiber.Ctx) error {
+		claims, ok := ctx.Locals("claims").(jwt.Claims)
+		if !ok {
+			return errx.ErrClaimsNotFound
+		}
+
+		if claims.Role != role {
+			return errx.ErrUnauthorized
+		}
+
+		return ctx.Next()
+	}
+}
