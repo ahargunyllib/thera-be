@@ -17,7 +17,7 @@ func InitHospitalController(
 		hospitalSvc: hospitalService,
 	}
 
-	hospitalCtrl := router.Group("/hospitals")
-	hospitalCtrl.Get("/", controller.getHospitals)
-	hospitalCtrl.Get("/:id", controller.getHospitalByID)
+	hospitalRouter := router.Group("/hospitals")
+	hospitalRouter.Get("/", controller.getHospitals)
+	hospitalRouter.Get("/:id", controller.getHospitalByID)
 }
