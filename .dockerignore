@@ -1,0 +1,19 @@
+tmp
+data/logs
+
+.vscode/
+.idea/
+config/
+
+# ignore air (live reload) files
+.air.toml
+tmp
+
+# ignore git files
+.git
+
+# ignore build files
+/build
+
+# test files
+coverage.*
