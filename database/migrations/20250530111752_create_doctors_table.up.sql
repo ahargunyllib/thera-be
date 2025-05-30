@@ -1,0 +1,16 @@
+CREATE TABLE doctors (
+		id VARCHAR(36) PRIMARY KEY,
+		full_name VARCHAR(255) NOT NULL,
+		email VARCHAR(100) NOT NULL UNIQUE,
+		phone_number VARCHAR(20) NULL,
+		specialty INT NOT NULL,
+		hospital_id INT NOT NULL REFERENCES hospitals(id) ON DELETE CASCADE,
+		password VARCHAR(255) NOT NULL,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TRIGGER update_doctor_timestamp
+BEFORE UPDATE ON doctors
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();

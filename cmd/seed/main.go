@@ -10,6 +10,7 @@ import (
 	"github.com/ahargunyllib/thera-be/domain/contracts"
 	"github.com/ahargunyllib/thera-be/domain/entity"
 	adminRepository "github.com/ahargunyllib/thera-be/internal/app/admin/repository"
+	doctorRepo "github.com/ahargunyllib/thera-be/internal/app/doctor/repository"
 	hospitalRepository "github.com/ahargunyllib/thera-be/internal/app/hospital/repository"
 	"github.com/ahargunyllib/thera-be/internal/infra/database"
 	"github.com/ahargunyllib/thera-be/internal/infra/env"
@@ -36,6 +37,7 @@ func main() {
 
 	hospitalRepo := hospitalRepository.NewHospitalRepository(psqlDB)
 	adminRepo := adminRepository.NewAdminRepository(psqlDB)
+	doctorRepo := doctorRepo.NewDoctorRepository(psqlDB)
 
 	bcrypt := bcrypt.Bcrypt
 	uuid := uuid.UUID
@@ -45,6 +47,8 @@ func main() {
 		seedHospitals(path, hospitalRepo)
 	case "admins":
 		seedAdmins(path, adminRepo, bcrypt, uuid)
+	case "doctors":
+		seedDoctors(path, doctorRepo, bcrypt, uuid)
 	default:
 		log.Error(log.CustomLogInfo{
 			"seeder_entity": flag.FlagVars.SeederEntity,
@@ -211,4 +215,90 @@ func seedAdmins(path string, adminRepo contracts.AdminRepository, bcrypt bcrypt.
 			continue
 		}
 	}
+}
+
+func seedDoctors(path string, doctorRepo contracts.DoctorRepository, bcrypt bcrypt.BcryptInterface, uuid uuid.UUIDInterface) {
+	path += "doctors.csv"
+
+	file, err := os.Open(path)
+	if err != nil {
+		log.Fatal(log.CustomLogInfo{
+			"error": err,
+		}, "[seed][seedDoctors] Error opening file")
+	}
+	defer file.Close()
+
+	reader := csv.NewReader(file)
+	records, err := reader.ReadAll()
+	if err != nil {
+		log.Error(log.CustomLogInfo{
+			"error": err,
+		}, "[seed][seedDoctors] Error reading file")
+		return
+	}
+
+	ctx := context.Background()
+	for idx, record := range records {
+		if idx == 0 { // skip header
+			continue
+		}
+
+		fullName := record[0]
+		email := record[1]
+		phoneNumber := record[2]
+		speciality, err := strconv.Atoi(record[3])
+		if err != nil {
+			log.Error(log.CustomLogInfo{
+				"error": err,
+			}, "[seed][seedDoctors] Error parsing specialty")
+			continue
+		}
+		hospitalID, err := strconv.Atoi(record[4])
+		if err != nil {
+			log.Error(log.CustomLogInfo{
+				"error": err,
+			}, "[seed][seedDoctors] Error parsing hospital ID")
+			continue
+		}
+		password := record[5]
+
+		hashedPassword, err := bcrypt.Hash(password)
+		if err != nil {
+			log.Error(log.CustomLogInfo{
+				"error": err,
+			}, "[seed][seedDoctors] Error hashing password")
+			continue
+		}
+
+		id, err := uuid.NewV7()
+		if err != nil {
+			log.Error(log.CustomLogInfo{
+				"error": err,
+			}, "[seed][seedDoctors] Error generating UUID")
+			continue
+		}
+
+		doctor := &entity.Doctor{
+			ID:       id,
+			FullName: fullName,
+			Email:    email,
+			PhoneNumber: sql.NullString{
+				String: phoneNumber,
+				Valid:  true,
+			},
+			Specialty:  speciality,
+			HospitalID: hospitalID,
+			Password:   hashedPassword,
+		}
+
+		err = doctorRepo.CreateDoctor(ctx, doctor)
+		if err != nil {
+			log.Error(log.CustomLogInfo{
+				"error":  err,
+				"doctor": doctor,
+			}, "[seed][seedDoctors] Error creating doctor")
+			continue
+		}
+	}
+
 }

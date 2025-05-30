@@ -4,6 +4,9 @@ import (
 	adminController "github.com/ahargunyllib/thera-be/internal/app/admin/controller"
 	adminRepo "github.com/ahargunyllib/thera-be/internal/app/admin/repository"
 	adminSvc "github.com/ahargunyllib/thera-be/internal/app/admin/service"
+	doctorController "github.com/ahargunyllib/thera-be/internal/app/doctor/controller"
+	doctorRepo "github.com/ahargunyllib/thera-be/internal/app/doctor/repository"
+	doctorSvc "github.com/ahargunyllib/thera-be/internal/app/doctor/service"
 	hospitalController "github.com/ahargunyllib/thera-be/internal/app/hospital/controller"
 	hospitalRepo "github.com/ahargunyllib/thera-be/internal/app/hospital/repository"
 	hospitalSvc "github.com/ahargunyllib/thera-be/internal/app/hospital/service"
@@ -92,14 +95,17 @@ func (s *httpServer) MountRoutes(db *sqlx.DB, redis *redis.Client) {
 
 	hospitalRepository := hospitalRepo.NewHospitalRepository(db)
 	adminRepository := adminRepo.NewAdminRepository(db)
+	doctorRepository := doctorRepo.NewDoctorRepository(db)
 
 	hospitalService := hospitalSvc.NewHospitalService(hospitalRepository, validator)
 	adminService := adminSvc.NewAdminService(adminRepository, validator, bcrypt, jwt)
+	doctorService := doctorSvc.NewDoctorService(doctorRepository, validator, bcrypt, jwt)
 
 	middleware := middlewares.NewMiddleware(jwt)
 
 	hospitalController.InitHospitalController(v1, hospitalService)
 	adminController.InitAdminController(v1, adminService, middleware)
+	doctorController.InitDoctorController(v1, doctorService, middleware)
 
 	s.app.Use(func(c *fiber.Ctx) error {
 		return c.SendFile("./web/not-found.html")
