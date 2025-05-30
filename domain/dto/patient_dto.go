@@ -46,8 +46,8 @@ func NewPatientResponse(patientEntity *entity.Patient) PatientResponse {
 }
 
 type GetPatientsQuery struct {
-	Limit     int    `json:"limit" validate:"required,gte=1"`
-	Page      int    `json:"page" validate:"required,gte=1"`
+	Limit     int    `json:"limit,omitempty" validate:"omitempty,gte=1"`
+	Page      int    `json:"page,omitempty" validate:"omitempty,gte=1"`
 	SortBy    string `json:"sort_by,omitempty" validate:"omitempty,oneof=id full_name created_at"`
 	SortOrder string `json:"sort_order,omitempty" validate:"omitempty,oneof=asc desc"`
 }
