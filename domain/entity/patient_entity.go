@@ -12,8 +12,8 @@ type Patient struct {
 	FullName            string         `db:"full_name"`
 	IDNumber            string         `db:"id_number"`
 	PhoneNumber         sql.NullString `db:"phone_number"`
-	Address             sql.NullString `db:"address"`
-	DateOfBirth         sql.NullTime   `db:"date_of_birth"`
+	Address             string         `db:"address"`
+	DateOfBirth         time.Time      `db:"date_of_birth"`
 	Gender              int            `db:"gender"`
 	Height              float64        `db:"height"`
 	Weight              float64        `db:"weight"`

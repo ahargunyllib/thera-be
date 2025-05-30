@@ -19,14 +19,12 @@ func parsePatientRequest(data *entity.Patient, req *dto.UpdatePatientRequest) er
 		data.PhoneNumber.Valid = true
 	}
 
-	if req.Address != "" && data.Address.String != req.Address {
-		data.Address.String = req.Address
-		data.Address.Valid = true
+	if req.Address != "" && data.Address != req.Address {
+		data.Address = req.Address
 	}
 
-	if !req.DateOfBirth.IsZero() && data.DateOfBirth.Time != req.DateOfBirth {
-		data.DateOfBirth.Time = req.DateOfBirth
-		data.DateOfBirth.Valid = true
+	if !req.DateOfBirth.IsZero() && data.DateOfBirth != req.DateOfBirth {
+		data.DateOfBirth = req.DateOfBirth
 	}
 
 	// if req.Gender != "" && data.Gender != req.Gender {

@@ -31,8 +31,8 @@ func NewPatientResponse(patientEntity *entity.Patient) PatientResponse {
 		FullName:            patientEntity.FullName,
 		IDNumber:            patientEntity.IDNumber,
 		PhoneNumber:         patientEntity.PhoneNumber.String,
-		Address:             patientEntity.Address.String,
-		DateOfBirth:         patientEntity.DateOfBirth.Time,
+		Address:             patientEntity.Address,
+		DateOfBirth:         patientEntity.DateOfBirth,
 		Gender:              "", // TODO
 		Height:              patientEntity.Height,
 		Weight:              patientEntity.Weight,
@@ -70,9 +70,9 @@ type GetPatientResponse struct {
 type CreatePatientRequest struct {
 	FullName            string    `json:"full_name" validate:"required"`
 	IDNumber            string    `json:"id_number" validate:"required"`
-	PhoneNumber         string    `json:"phone_number,omitempty" validate:"omitempty,phone"`
+	PhoneNumber         string    `json:"phone_number,omitempty" validate:"omitempty"`
 	Address             string    `json:"address,omitempty"`
-	DateOfBirth         time.Time `json:"date_of_birth,omitempty" validate:"omitempty,date"`
+	DateOfBirth         time.Time `json:"date_of_birth,omitempty" validate:"omitempty"`
 	Gender              string    `json:"gender" validate:"required,oneof=male female"`
 	Height              float64   `json:"height" validate:"required,gte=0"`
 	Weight              float64   `json:"weight" validate:"required,gte=0"`
@@ -85,9 +85,9 @@ type CreatePatientRequest struct {
 type UpdatePatientRequest struct {
 	FullName            string    `json:"full_name,omitempty" validate:"omitempty"`
 	IDNumber            string    `json:"id_number,omitempty" validate:"omitempty"`
-	PhoneNumber         string    `json:"phone_number,omitempty" validate:"omitempty,phone"`
+	PhoneNumber         string    `json:"phone_number,omitempty" validate:"omitempty"`
 	Address             string    `json:"address,omitempty"`
-	DateOfBirth         time.Time `json:"date_of_birth,omitempty" validate:"omitempty,date"`
+	DateOfBirth         time.Time `json:"date_of_birth,omitempty" validate:"omitempty"`
 	Gender              string    `json:"gender" validate:"omitempty,oneof=male female"`
 	Height              float64   `json:"height,omitempty" validate:"omitempty,gte=0"`
 	Weight              float64   `json:"weight,omitempty" validate:"omitempty,gte=0"`

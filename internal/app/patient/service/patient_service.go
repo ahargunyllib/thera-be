@@ -27,23 +27,16 @@ func (ps *patientService) CreatePatient(ctx context.Context, req dto.CreatePatie
 			String: req.PhoneNumber,
 			Valid:  req.PhoneNumber != "",
 		},
-		Address: sql.NullString{
-			String: req.Address,
-			Valid:  req.Address != "",
-		},
-		DateOfBirth: sql.NullTime{
-			Time:  req.DateOfBirth,
-			Valid: !req.DateOfBirth.IsZero(),
-		},
-		Gender:    1, // TODO
-		Height:    req.Height,
-		Weight:    req.Weight,
-		BloodType: 1, // TODO
+		Address:     req.Address,
+		DateOfBirth: req.DateOfBirth,
+		Gender:      1, // TODO
+		Height:      req.Height,
+		Weight:      req.Weight,
+		BloodType:   1, // TODO
 		Allergies: sql.NullString{
 			String: req.Allergies,
 			Valid:  req.Allergies != "",
 		},
-
 		MedicalRecordNumber: req.MedicalRecordNumber,
 		HospitalID:          req.HospitalID,
 	}
