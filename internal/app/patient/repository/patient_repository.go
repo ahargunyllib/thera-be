@@ -57,17 +57,23 @@ func (p *patientRepository) CreatePatient(ctx context.Context, patient *entity.P
 				{
 					Code:           pgerror.UniqueViolation,
 					ConstraintName: "patients_id_number_key",
-					Err:            errx.ErrIDNumberPatientAlreadyExists,
+					Err: errx.ErrIDNumberPatientAlreadyExists.WithDetails(map[string]any{
+						"id_number": patient.IDNumber,
+					}).WithLocation("repository.patient.CreatePatient"),
 				},
 				{
 					Code:           pgerror.UniqueViolation,
 					ConstraintName: "patients_medical_record_number_key",
-					Err:            errx.ErrMedicalRecordNumberPatientAlreadyExists,
+					Err: errx.ErrMedicalRecordNumberPatientAlreadyExists.WithDetails(map[string]any{
+						"medical_record_number": patient.MedicalRecordNumber,
+					}).WithLocation("repository.patient.CreatePatient"),
 				},
 				{
 					Code:           pgerror.ForeignKey,
 					ConstraintName: "patients_hospital_id_fkey",
-					Err:            errx.ErrHospitalNotFound,
+					Err: errx.ErrHospitalNotFound.WithDetails(map[string]any{
+						"hospital_id": patient.HospitalID,
+					}).WithLocation("repository.patient.CreatePatient"),
 				},
 			}
 
@@ -99,7 +105,9 @@ func (p *patientRepository) DeletePatientByID(ctx context.Context, id uuid.UUID)
 		return err
 	}
 
-	return helpers.CheckRowsAffected(rowsAffected, errx.ErrPatientNotFound)
+	return helpers.CheckRowsAffected(rowsAffected, errx.ErrPatientNotFound.WithDetails(map[string]any{
+		"id": id,
+	}).WithLocation("repository.patient.DeletePatientByID"))
 }
 
 func (p *patientRepository) GetPatientByID(ctx context.Context, id uuid.UUID) (*entity.Patient, error) {
@@ -140,7 +148,9 @@ func (p *patientRepository) GetPatientByID(ctx context.Context, id uuid.UUID) (*
 	err := p.db.GetContext(ctx, &patient, qb.String(), id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errx.ErrPatientNotFound
+			return nil, errx.ErrPatientNotFound.WithDetails(map[string]any{
+				"id": id,
+			}).WithLocation("repository.patient.GetPatientByID")
 		}
 		return nil, err
 	}
@@ -226,5 +236,7 @@ func (p *patientRepository) UpdatePatient(ctx context.Context, patient *entity.P
 		return err
 	}
 
-	return helpers.CheckRowsAffected(rowsAffected, errx.ErrPatientNotFound)
+	return helpers.CheckRowsAffected(rowsAffected, errx.ErrPatientNotFound.WithDetails(map[string]any{
+		"id": patient.ID,
+	}).WithLocation("repository.patient.UpdatePatient"))
 }

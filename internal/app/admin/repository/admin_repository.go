@@ -30,12 +30,16 @@ func (ar *adminRepository) CreateAdmin(ctx context.Context, admin *entity.Admin)
 				{
 					Code:           pgerror.UniqueViolation,
 					ConstraintName: "admins_email_key",
-					Err:            errx.ErrAdminAlreadyExists,
+					Err: errx.ErrAdminAlreadyExists.WithDetails(map[string]any{
+						"email": admin.Email,
+					}).WithLocation("repository.admin.CreateAdmin"),
 				},
 				{
 					Code:           pgerror.ForeignKey,
 					ConstraintName: "admins_hospital_id_fkey",
-					Err:            errx.ErrHospitalNotFound,
+					Err: errx.ErrHospitalNotFound.WithDetails(map[string]any{
+						"hospital_id": admin.HospitalID,
+					}).WithLocation("repository.admin.CreateAdmin"),
 				},
 			}
 
@@ -71,7 +75,9 @@ func (ar *adminRepository) GetAdminByEmail(ctx context.Context, email string) (*
 	err := ar.db.GetContext(ctx, &admin, qb.String(), email)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errx.ErrAdminNotFound
+			return nil, errx.ErrAdminNotFound.WithDetails(map[string]any{
+				"email": email,
+			}).WithLocation("repository.admin.GetAdminByEmail")
 		}
 
 		return nil, err
@@ -113,7 +119,9 @@ func (ar *adminRepository) GetAdminByID(ctx context.Context, id uuid.UUID) (*ent
 	err := ar.db.GetContext(ctx, &admin, qb.String(), id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errx.ErrAdminNotFound
+			return nil, errx.ErrAdminNotFound.WithDetails(map[string]any{
+				"id": id,
+			}).WithLocation("repository.admin.GetAdminByID")
 		}
 
 		return nil, err

@@ -92,7 +92,11 @@ func (hr *hospitalRepository) GetHospitalByID(ctx context.Context, id int) (*ent
 	err := hr.db.GetContext(ctx, &hospital, qb.String(), id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errx.ErrHospitalNotFound
+			return nil, errx.ErrHospitalNotFound.
+				WithDetails(map[string]any{
+					"id": id,
+				}).
+				WithLocation("repository.hospital.GetHospitalByID")
 		}
 
 		return nil, err

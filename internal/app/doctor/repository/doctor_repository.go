@@ -46,7 +46,9 @@ func (d *doctorRepository) GetDoctorByEmail(ctx context.Context, email string) (
 	err := d.db.GetContext(ctx, &doctor, qb.String(), email)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errx.ErrDoctorNotFound
+			return nil, errx.ErrDoctorNotFound.WithDetails(map[string]any{
+				"email": email,
+			}).WithLocation("repository.doctor.GetDoctorByEmail")
 		}
 
 		return nil, err
@@ -91,12 +93,16 @@ func (d *doctorRepository) CreateDoctor(ctx context.Context, doctor *entity.Doct
 				{
 					Code:           pgerror.UniqueViolation,
 					ConstraintName: "doctors_email_key",
-					Err:            errx.ErrDoctorAlreadyExists,
+					Err: errx.ErrDoctorAlreadyExists.WithDetails(map[string]any{
+						"email": doctor.Email,
+					}).WithLocation("repository.doctor.CreateDoctor"),
 				},
 				{
 					Code:           pgerror.ForeignKey,
 					ConstraintName: "doctors_hospital_id_fkey",
-					Err:            errx.ErrHospitalNotFound,
+					Err: errx.ErrHospitalNotFound.WithDetails(map[string]any{
+						"hospital_id": doctor.HospitalID,
+					}).WithLocation("repository.doctor.CreateDoctor"),
 				},
 			}
 
@@ -142,7 +148,9 @@ func (d *doctorRepository) GetDoctorByID(ctx context.Context, id uuid.UUID) (*en
 	err := d.db.GetContext(ctx, &doctor, qb.String(), id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errx.ErrDoctorNotFound
+			return nil, errx.ErrDoctorNotFound.WithDetails(map[string]any{
+				"id": id,
+			}).WithLocation("repository.doctor.GetDoctorByID")
 		}
 
 		return nil, err
