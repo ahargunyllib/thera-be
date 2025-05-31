@@ -28,7 +28,7 @@ func (ms *moodService) CreateMood(ctx context.Context, req dto.CreateMoodRequest
 	}
 
 	go func() {
-		if req.Scale < 3 {
+		if req.Scale <= 3 {
 			doctor, getDoctorError := ms.moodRepo.GetDoctorByID(ctx, req.DoctorID)
 			if getDoctorError != nil {
 				log.Error(log.CustomLogInfo{
