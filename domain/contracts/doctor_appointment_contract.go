@@ -20,6 +20,11 @@ type DoctorAppointmentRepository interface {
 		startTime string,
 		endTime string,
 	) (bool, error)
+
+	CreateDoctorAppointmentNotification(
+		ctx context.Context,
+		notification *entity.Notification,
+	) error
 }
 
 type DoctorAppointmentService interface {

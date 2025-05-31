@@ -2,11 +2,14 @@ package service
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/ahargunyllib/thera-be/domain/dto"
 	"github.com/ahargunyllib/thera-be/domain/entity"
 	"github.com/ahargunyllib/thera-be/domain/enums"
 	"github.com/ahargunyllib/thera-be/domain/errx"
+	"github.com/ahargunyllib/thera-be/pkg/log"
+	"github.com/google/uuid"
 )
 
 func (d *doctorAppointmentService) CreateDoctorAppointment(
@@ -51,6 +54,29 @@ func (d *doctorAppointmentService) CreateDoctorAppointment(
 	if err != nil {
 		return err
 	}
+
+	go func() {
+		notification := entity.Notification{
+			ID: id.String(),
+			DoctorID: uuid.NullUUID{
+				UUID:  req.DoctorID,
+				Valid: true,
+			},
+			Title: "New Appointment Scheduled",
+			Body: sql.NullString{
+				String: "You have a new appointment scheduled with a patient.",
+				Valid:  true,
+			},
+		}
+
+		err = d.doctorAppointmentRepo.CreateDoctorAppointmentNotification(ctx, &notification)
+		if err != nil {
+			log.Error(log.CustomLogInfo{
+				"message": "Failed to create doctor appointment notification",
+				"err":     err,
+			}, "[doctorAppointmentService.CreateDoctorAppointment]")
+		}
+	}()
 
 	return nil
 }

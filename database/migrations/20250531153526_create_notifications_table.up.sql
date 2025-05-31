@@ -4,7 +4,7 @@ CREATE TABLE notifications (
 	hospital_id INT NULL REFERENCES hospitals(id) ON DELETE CASCADE,
   title VARCHAR(255) NOT NULL,
   body TEXT NULL,
-  type INT NULL,
+  type INT NOT NULL DEFAULT(1),
   read_at TIMESTAMP NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
