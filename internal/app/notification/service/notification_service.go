@@ -5,6 +5,7 @@ import (
 
 	"github.com/ahargunyllib/thera-be/domain/dto"
 	"github.com/ahargunyllib/thera-be/domain/entity"
+	"github.com/ahargunyllib/thera-be/pkg/log"
 	"github.com/google/uuid"
 )
 
@@ -37,9 +38,22 @@ func (n *notificationService) GetMyNotifications(
 	}
 
 	notificationsResponse := make([]dto.NotificationResponse, len(notifications))
+	notificationIDs := make([]string, len(notifications))
 	for i, notification := range notifications {
 		notificationsResponse[i] = dto.NewNotificationResponse(&notification)
+		notificationIDs[i] = notification.ID
 	}
+
+	go func() {
+		err = n.notificationRepo.ReadNotifications(ctx, notificationIDs)
+		if err != nil {
+			// Log the error or handle it as needed
+			log.Error(log.CustomLogInfo{
+				"message": "Failed to mark notifications as read",
+				"err":     err,
+			}, "[notificationService.GetMyNotifications]")
+		}
+	}()
 
 	res := dto.GetMyNotificationsResponse{
 		Notifications: notificationsResponse,

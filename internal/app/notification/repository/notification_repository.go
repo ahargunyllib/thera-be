@@ -49,3 +49,26 @@ func (n *notificationRepository) GetNotificationsByHospitalID(
 
 	return notifications, nil
 }
+
+func (n *notificationRepository) ReadNotifications(
+	ctx context.Context,
+	notificationIDs []string,
+) error {
+	if len(notificationIDs) == 0 {
+		return nil // No notifications to read
+	}
+
+	var qb strings.Builder
+	qb.WriteString(`
+		UPDATE notifications
+		SET read_at = NOW()
+		WHERE id = ANY($1)
+	`)
+
+	_, err := n.db.ExecContext(ctx, qb.String(), notificationIDs)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
