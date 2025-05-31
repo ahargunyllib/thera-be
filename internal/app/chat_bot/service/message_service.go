@@ -19,6 +19,7 @@ func (c *chatBotService) CreateMessage(
 		return dto.CreateMessageResponse{}, valErr
 	}
 
+	isCreatingNewChannel := false
 	if req.ChannelID == uuid.Nil {
 		channelID, err := c.uuid.NewV7()
 		if err != nil {
@@ -26,6 +27,8 @@ func (c *chatBotService) CreateMessage(
 		}
 
 		req.ChannelID = channelID
+
+		isCreatingNewChannel = true
 	}
 
 	messageID, err := c.uuid.NewV7()
@@ -93,6 +96,37 @@ func (c *chatBotService) CreateMessage(
 	if err != nil {
 		_ = c.chatBotRepo.Rollback()
 		return dto.CreateMessageResponse{}, err
+	}
+
+	if isCreatingNewChannel {
+		// Ask for channel name if creating a new channel
+		msgs := make([]openai.Message, 2)
+		msgs[0] = openai.Message{
+			Content: "Please provide a name for the new channel. Short and concise. For example: 'General Health Discussion'",
+			Role:    "user",
+		}
+		msgs[1] = openai.Message{
+			Content: userMessage.Content + " " + chatRes.Choices[0].Message.Content,
+			Role:    "assistant",
+		}
+
+		chatRes, err = c.openai.Chat(ctx, msgs)
+		if err != nil {
+			_ = c.chatBotRepo.Rollback()
+			return dto.CreateMessageResponse{}, err
+		}
+
+		channel := &entity.Channel{
+			ID:       req.ChannelID,
+			Name:     chatRes.Choices[0].Message.Content,
+			DoctorID: req.DoctorID,
+		}
+
+		err = c.chatBotRepo.CreateChannel(ctx, channel)
+		if err != nil {
+			_ = c.chatBotRepo.Rollback()
+			return dto.CreateMessageResponse{}, err
+		}
 	}
 
 	err = c.chatBotRepo.Commit()

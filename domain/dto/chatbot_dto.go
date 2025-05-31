@@ -64,6 +64,7 @@ func NewMessageResponse(messageEntity *entity.Message) MessageResponse {
 
 type CreateMessageRequest struct {
 	ChannelID uuid.UUID `json:"channel_id,omitempty" validate:"omitempty,uuid"`
+	DoctorID  uuid.UUID `validate:"uuid"`
 	Content   string    `json:"content" validate:"required"`
 }
 
