@@ -122,4 +122,14 @@ var (
 		"too_many_requests",
 		"Too many requests. Please try again later.",
 	)
+	ErrCannotParseUUID = NewError(
+		http.StatusBadRequest,
+		"cannot_parse_uuid",
+		"Cannot parse the provided UUID. Please check the format and try again.",
+	)
+	ErrInvalidDateFormat = NewError(
+		http.StatusBadRequest,
+		"invalid_date_format",
+		"Please enter a valid date format.",
+	)
 )

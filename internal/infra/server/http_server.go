@@ -7,6 +7,9 @@ import (
 	doctorController "github.com/ahargunyllib/thera-be/internal/app/doctor/controller"
 	doctorRepo "github.com/ahargunyllib/thera-be/internal/app/doctor/repository"
 	doctorSvc "github.com/ahargunyllib/thera-be/internal/app/doctor/service"
+	doctorScheduleController "github.com/ahargunyllib/thera-be/internal/app/doctor_schedule/controller"
+	doctorScheduleRepo "github.com/ahargunyllib/thera-be/internal/app/doctor_schedule/repository"
+	doctorScheduleSvc "github.com/ahargunyllib/thera-be/internal/app/doctor_schedule/service"
 	hospitalController "github.com/ahargunyllib/thera-be/internal/app/hospital/controller"
 	hospitalRepo "github.com/ahargunyllib/thera-be/internal/app/hospital/repository"
 	hospitalSvc "github.com/ahargunyllib/thera-be/internal/app/hospital/service"
@@ -106,12 +109,14 @@ func (s *httpServer) MountRoutes(db *sqlx.DB, redis *redis.Client) {
 	doctorRepository := doctorRepo.NewDoctorRepository(db)
 	patientRepository := patientRepo.NewPatientRepository(db)
 	moodRepository := moodRepo.NewMoodRepository(db)
+	doctorScheduleRepository := doctorScheduleRepo.NewDoctorScheduleRepository(db)
 
 	hospitalService := hospitalSvc.NewHospitalService(hospitalRepository, validator)
 	adminService := adminSvc.NewAdminService(adminRepository, validator, bcrypt, jwt)
 	doctorService := doctorSvc.NewDoctorService(doctorRepository, validator, bcrypt, jwt)
 	patientService := patientSvc.NewPatientService(patientRepository, validator, uuid)
 	moodService := moodSvc.NewMoodService(moodRepository, validator)
+	doctorScheduleService := doctorScheduleSvc.NewDoctorScheduleService(doctorScheduleRepository, validator)
 
 	middleware := middlewares.NewMiddleware(jwt)
 
@@ -120,6 +125,7 @@ func (s *httpServer) MountRoutes(db *sqlx.DB, redis *redis.Client) {
 	doctorController.InitDoctorController(v1, doctorService, middleware)
 	patientController.InitPatientController(v1, patientService, middleware)
 	moodController.InitMoodController(v1, moodService, middleware)
+	doctorScheduleController.InitDoctorScheduleController(v1, doctorScheduleService, middleware)
 
 	s.app.Use(func(c *fiber.Ctx) error {
 		return c.SendFile("./web/not-found.html")
