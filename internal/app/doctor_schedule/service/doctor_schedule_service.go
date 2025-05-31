@@ -142,7 +142,7 @@ func (dss *doctorScheduleService) GetPreviewImprovedNextSchedule(
 			- If the mood is 3, reduce the hours by 1-2 hours.
 			- If the mood is 4 or 5, keep the schedule unchanged.
 			Always use 24-hour format for times, no AM/PM, no extra text.
-			Always return a JSON object like this:
+			Always return a JSON object like this WITHOUT JSON TAG (MARKDOWN):
 			{
 				"start_time": "HH:MM",
 				"end_time": "HH:MM"

@@ -173,9 +173,8 @@ func (d *doctorScheduleRepository) GetNextScheduleByDoctorID(
 		FROM doctor_schedules
 		WHERE 1=1
 		AND doctor_id = $1
-		AND start_time > CURRENT_TIME
-		AND day_of_week = EXTRACT(DOW FROM NOW())
-		ORDER BY start_time ASC
+		OR day_of_week > EXTRACT(DOW FROM NOW())
+		ORDER BY day_of_week ASC, start_time ASC
 		LIMIT 1
 	`)
 	err := d.db.GetContext(ctx, &schedule, qb.String(), doctorID)
