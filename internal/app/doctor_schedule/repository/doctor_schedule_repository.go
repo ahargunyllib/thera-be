@@ -122,6 +122,39 @@ func (d *doctorScheduleRepository) GetDoctorSchedules(
 	return schedules, nil
 }
 
+func (d *doctorScheduleRepository) GetDoctorScheduleByID(
+	ctx context.Context,
+	scheduleID int,
+) (*entity.DoctorSchedule, error) {
+	var schedule entity.DoctorSchedule
+
+	var qb strings.Builder
+
+	qb.WriteString(`
+		SELECT
+			doctor_schedules.id,
+			doctor_schedules.doctor_id,
+			doctor_schedules.start_time,
+			doctor_schedules.end_time,
+			doctor_schedules.day_of_week,
+		FROM doctor_schedules
+		WHERE doctor_schedules.id = $1
+	`)
+
+	err := d.db.GetContext(ctx, &schedule, qb.String(), scheduleID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, errx.ErrDoctorScheduleNotFound.WithDetails(map[string]any{
+				"id": scheduleID,
+			}).WithLocation("repository.doctor_schedule.GetDoctorScheduleByID")
+		}
+
+		return nil, err
+	}
+
+	return &schedule, nil
+}
+
 func (d *doctorScheduleRepository) UpdateDoctorSchedule(ctx context.Context, schedule *entity.DoctorSchedule) error {
 	var qb strings.Builder
 

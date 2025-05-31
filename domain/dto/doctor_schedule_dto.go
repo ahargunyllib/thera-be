@@ -52,10 +52,10 @@ type UpdateDoctorScheduleParams struct {
 }
 
 type UpdateDoctorScheduleRequest struct {
-	DoctorID  uuid.UUID `json:"doctor_id" validate:"required,uuid"`
-	DayOfWeek int       `json:"day_of_week" validate:"required,oneof=0 1 2 3 4 5 6"`
-	StartTime string    `json:"start_time" validate:"required"` // time.TimeOnly
-	EndTime   string    `json:"end_time" validate:"required"`   // time.TimeOnly
+	DoctorID  uuid.UUID `json:"doctor_id" validate:"omitempty,uuid"`
+	DayOfWeek int       `json:"day_of_week" validate:"omitempty,oneof=0 1 2 3 4 5 6"`
+	StartTime string    `json:"start_time" validate:"omitempty"` // time.TimeOnly
+	EndTime   string    `json:"end_time" validate:"omitempty"`   // time.TimeOnly
 }
 
 type DeleteDoctorScheduleParams struct {

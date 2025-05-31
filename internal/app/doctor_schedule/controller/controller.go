@@ -38,7 +38,7 @@ func InitDoctorScheduleController(
 		middleware.RequireRole("admin"),
 		controller.getImprovedNextSchedulePreview,
 	)
-	doctorScheduleRouter.Put(
+	doctorScheduleRouter.Patch(
 		"/:id",
 		middleware.RequireAuth(),
 		middleware.RequireRole("admin"),

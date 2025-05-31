@@ -10,6 +10,7 @@ import (
 
 type DoctorScheduleRepository interface {
 	GetDoctorSchedules(ctx context.Context, query *dto.GetDoctorSchedulesQuery) ([]entity.DoctorSchedule, error)
+	GetDoctorScheduleByID(ctx context.Context, scheduleID int) (*entity.DoctorSchedule, error)
 	CreateDoctorSchedule(ctx context.Context, schedule *entity.DoctorSchedule) error
 	UpdateDoctorSchedule(ctx context.Context, schedule *entity.DoctorSchedule) error
 	DeleteDoctorSchedule(ctx context.Context, scheduleID int) error

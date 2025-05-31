@@ -96,15 +96,36 @@ func (dss *doctorScheduleService) UpdateDoctorSchedule(
 		return valErr
 	}
 
-	doctorSchedule := &entity.DoctorSchedule{
-		ID:        params.ID,
-		DoctorID:  req.DoctorID,
-		DayOfWeek: req.DayOfWeek,
-		StartTime: req.StartTime,
-		EndTime:   req.EndTime,
+	doctorSchedule, err := dss.doctorScheduleRepo.GetDoctorScheduleByID(ctx, params.ID)
+	if err != nil {
+		return err
 	}
 
-	err := dss.doctorScheduleRepo.UpdateDoctorSchedule(ctx, doctorSchedule)
+	// if req.DayOfWeek != 0 && req.DayOfWeek != doctorSchedule.DayOfWeek {
+	// 	doctorSchedule.DayOfWeek = req.DayOfWeek
+	// }
+
+	if req.StartTime != "" && req.StartTime != doctorSchedule.StartTime {
+		_, err := time.Parse("15:04", req.StartTime)
+		if err != nil {
+			return errx.ErrInvalidTimeFormat.WithDetails(map[string]any{
+				"start_time": req.StartTime,
+			})
+		}
+		doctorSchedule.StartTime = req.StartTime
+	}
+
+	if req.EndTime != "" && req.EndTime != doctorSchedule.EndTime {
+		_, err := time.Parse("15:04", req.EndTime)
+		if err != nil {
+			return errx.ErrInvalidTimeFormat.WithDetails(map[string]any{
+				"end_time": req.EndTime,
+			})
+		}
+		doctorSchedule.EndTime = req.EndTime
+	}
+
+	err = dss.doctorScheduleRepo.UpdateDoctorSchedule(ctx, doctorSchedule)
 	if err != nil {
 		return err
 	}
