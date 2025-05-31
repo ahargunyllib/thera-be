@@ -25,6 +25,7 @@ func NewNotificationResponse(notificationEntity *entity.Notification) Notificati
 		Body:      notificationEntity.Body.String,
 		Type:      enums.NotificationTypeMapIdx[notificationEntity.Type].LongLabel["id"],
 		IsRead:    notificationEntity.ReadAt.Valid,
+		Metadata:  notificationEntity.Metadata,
 		CreatedAt: notificationEntity.CreatedAt,
 	}
 }
