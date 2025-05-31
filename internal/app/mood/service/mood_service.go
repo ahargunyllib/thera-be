@@ -51,7 +51,7 @@ func (ms *moodService) CreateMood(ctx context.Context, req dto.CreateMoodRequest
 				ID: id.String(),
 				HospitalID: sql.NullInt64{
 					Int64: int64(doctor.HospitalID),
-					Valid: false,
+					Valid: true,
 				},
 				Title: "Low Mood Alert",
 				Body: sql.NullString{
