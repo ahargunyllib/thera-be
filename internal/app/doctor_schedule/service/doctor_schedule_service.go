@@ -15,14 +15,14 @@ func (dss *doctorScheduleService) CreateDoctorSchedule(ctx context.Context, req 
 		return valErr
 	}
 
-	_, err := time.Parse(req.StartTime, "15:04")
+	_, err := time.Parse(req.StartTime, time.TimeOnly)
 	if err != nil {
 		return errx.ErrInvalidTimeFormat.WithDetails(map[string]any{
 			"start_time": req.StartTime,
 		})
 	}
 
-	_, err = time.Parse(req.EndTime, "15:04")
+	_, err = time.Parse(req.EndTime, time.TimeOnly)
 	if err != nil {
 		return errx.ErrInvalidTimeFormat.WithDetails(map[string]any{
 			"end_time": req.EndTime,
