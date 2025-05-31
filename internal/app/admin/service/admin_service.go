@@ -45,7 +45,7 @@ func (as *adminService) LoginAdmin(ctx context.Context, req dto.LoginAdminReques
 		return dto.LoginAdminResponse{}, errx.ErrAdminInvalidCredentials
 	}
 
-	token, err := as.jwt.Create(admin.ID, "admin")
+	token, err := as.jwt.Create(admin.ID, "admin", admin.HospitalID)
 	if err != nil {
 		return dto.LoginAdminResponse{}, err
 	}

@@ -12,14 +12,16 @@ type CustomJwtInterface interface {
 	Create(
 		userID uuid.UUID,
 		role string,
+		hospitalID int,
 	) (string, error)
 	Decode(tokenString string, claims *Claims) error
 }
 
 type Claims struct {
 	jwt.RegisteredClaims
-	UserID uuid.UUID `json:"user_id"`
-	Role   string    `json:"role"`
+	UserID     uuid.UUID `json:"user_id"`
+	Role       string    `json:"role"`
+	HospitalID int       `json:"hospital_id"`
 }
 
 type CustomJwtStruct struct {
@@ -39,6 +41,7 @@ func getJwt() CustomJwtInterface {
 func (j *CustomJwtStruct) Create(
 	userID uuid.UUID,
 	role string,
+	hospitalID int,
 ) (string, error) {
 	claims := Claims{
 		RegisteredClaims: jwt.RegisteredClaims{
@@ -50,8 +53,9 @@ func (j *CustomJwtStruct) Create(
 			NotBefore: jwt.NewNumericDate(time.Now()),
 			ID:        uuid.New().String(),
 		},
-		UserID: userID,
-		Role:   role,
+		UserID:     userID,
+		Role:       role,
+		HospitalID: hospitalID,
 	}
 
 	unsignedJWT := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

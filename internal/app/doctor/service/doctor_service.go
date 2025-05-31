@@ -77,7 +77,7 @@ func (ds *doctorService) LoginDoctor(ctx context.Context, req dto.LoginDoctorReq
 		return dto.LoginDoctorResponse{}, errx.ErrDoctorInvalidCredentials
 	}
 
-	token, err := ds.jwt.Create(docter.ID, "doctor")
+	token, err := ds.jwt.Create(docter.ID, "doctor", docter.HospitalID)
 	if err != nil {
 		return dto.LoginDoctorResponse{}, err
 	}
