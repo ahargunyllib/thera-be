@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"fmt"
 	"strings"
@@ -153,4 +154,37 @@ func (d *doctorScheduleRepository) UpdateDoctorSchedule(ctx context.Context, sch
 	}
 
 	return nil
+}
+
+func (d *doctorScheduleRepository) GetNextScheduleByDoctorID(
+	ctx context.Context,
+	doctorID uuid.UUID,
+) (*entity.DoctorSchedule, error) {
+	var schedule entity.DoctorSchedule
+
+	var qb strings.Builder
+	qb.WriteString(`
+		SELECT
+			id,
+			doctor_id,
+			start_time,
+			end_time,
+			day_of_week
+		FROM doctor_schedules
+		WHERE 1=1
+		AND doctor_id = $1
+		AND start_time > CURRENT_TIME
+		AND day_of_week = EXTRACT(DOW FROM NOW())
+		ORDER BY start_time ASC
+		LIMIT 1
+	`)
+	err := d.db.GetContext(ctx, &schedule, qb.String(), doctorID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, errx.ErrDoctorScheduleNotFound
+		}
+		return nil, err
+	}
+
+	return &schedule, nil
 }

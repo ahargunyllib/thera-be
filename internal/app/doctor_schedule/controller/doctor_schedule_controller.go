@@ -79,3 +79,17 @@ func (dsc *doctorScheduleController) deleteDoctorSchedule(c *fiber.Ctx) error {
 
 	return response.SendResponse(c, fiber.StatusNoContent, nil)
 }
+
+func (dsc *doctorScheduleController) getImprovedNextSchedulePreview(c *fiber.Ctx) error {
+	var query dto.GetPreviewImprovedNextScheduleQuery
+	if err := c.QueryParser(&query); err != nil {
+		return err
+	}
+
+	res, err := dsc.doctorScheduleSvc.GetPreviewImprovedNextSchedule(c.Context(), query)
+	if err != nil {
+		return err
+	}
+
+	return response.SendResponse(c, fiber.StatusOK, res)
+}

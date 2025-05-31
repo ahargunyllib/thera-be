@@ -61,3 +61,11 @@ type UpdateDoctorScheduleRequest struct {
 type DeleteDoctorScheduleParams struct {
 	ID int `param:"id" validate:"required"`
 }
+
+type GetPreviewImprovedNextScheduleQuery struct {
+	DoctorID uuid.UUID `query:"doctor_id" validate:"required,uuid"`
+}
+
+type GetPreviewImprovedNextScheduleResponse struct {
+	NextSchedule DoctorScheduleResponse `json:"next_schedule"` // Next schedule for the doctor
+}
