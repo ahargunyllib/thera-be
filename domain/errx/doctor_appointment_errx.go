@@ -13,4 +13,9 @@ var (
 		"doctor_appointment_already_exists",
 		"An appointment with the same details already exists. Please check the doctor, patient, date, and time.",
 	)
+	ErrDoctorAppointmentNotAvailable = NewError(
+		http.StatusConflict,
+		"doctor_appointment_not_available",
+		"The requested appointment time is not available. Please choose a different time.",
+	)
 )

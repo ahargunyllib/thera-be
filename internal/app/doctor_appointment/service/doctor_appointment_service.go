@@ -6,6 +6,7 @@ import (
 	"github.com/ahargunyllib/thera-be/domain/dto"
 	"github.com/ahargunyllib/thera-be/domain/entity"
 	"github.com/ahargunyllib/thera-be/domain/enums"
+	"github.com/ahargunyllib/thera-be/domain/errx"
 )
 
 func (d *doctorAppointmentService) CreateDoctorAppointment(
@@ -20,6 +21,19 @@ func (d *doctorAppointmentService) CreateDoctorAppointment(
 	id, err := d.ulid.New()
 	if err != nil {
 		return err
+	}
+
+	isAvailable, err := d.doctorAppointmentRepo.CheckDoctorScheduleAvailability(
+		ctx,
+		req.DoctorID,
+		req.StartTime,
+		req.EndTime,
+	)
+	if err != nil {
+		return err
+	}
+	if !isAvailable {
+		return errx.ErrDoctorAppointmentNotAvailable
 	}
 
 	doctorAppointment := entity.DoctorAppointment{

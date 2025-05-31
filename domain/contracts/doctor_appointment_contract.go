@@ -5,6 +5,7 @@ import (
 
 	"github.com/ahargunyllib/thera-be/domain/dto"
 	"github.com/ahargunyllib/thera-be/domain/entity"
+	"github.com/google/uuid"
 )
 
 type DoctorAppointmentRepository interface {
@@ -12,6 +13,13 @@ type DoctorAppointmentRepository interface {
 	CreateDoctorAppointment(ctx context.Context, doctorAppointment *entity.DoctorAppointment) error
 	UpdateDoctorAppointment(ctx context.Context, doctorAppointment *entity.DoctorAppointment) error
 	DeleteDoctorAppointment(ctx context.Context, id string) error
+
+	CheckDoctorScheduleAvailability(
+		ctx context.Context,
+		doctorID uuid.UUID,
+		startTime string,
+		endTime string,
+	) (bool, error)
 }
 
 type DoctorAppointmentService interface {
