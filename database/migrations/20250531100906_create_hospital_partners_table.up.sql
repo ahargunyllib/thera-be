@@ -7,7 +7,7 @@ CREATE TABLE hospital_partners (
 	reason TEXT NULL,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
+);
 
 CREATE TRIGGER update_hospital_partners_timestamp
 BEFORE UPDATE ON hospital_partners

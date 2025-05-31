@@ -1,4 +1,4 @@
-CREATE TBABLE messages (
+CREATE TABLE messages (
 	id VARCHAR(36) PRIMARY KEY,
 	channel_id VARCHAR(36) NOT NULL REFERENCES channels(id) ON DELETE CASCADE,
 	content TEXT NOT NULL,
@@ -7,7 +7,7 @@ CREATE TBABLE messages (
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TRIGGER update_messages_updated_at
-AFTER UPDATE ON messages
+CREATE TRIGGER update_messages_timestamp
+BEFORE UPDATE ON messages
 FOR EACH ROW
-EXECUTE FUNCTION update_updated_at_column();
+EXECUTE FUNCTION update_timestamp();

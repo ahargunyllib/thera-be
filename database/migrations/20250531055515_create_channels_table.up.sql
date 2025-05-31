@@ -6,7 +6,7 @@ CREATE TABLE channels (
 		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TRIGGER update_channels_updated_at
-AFTER UPDATE ON channels
+CREATE TRIGGER update_channels_timestamp
+BEFORE UPDATE ON channels
 FOR EACH ROW
-EXECUTE FUNCTION update_updated_at_column();
+EXECUTE FUNCTION update_timestamp();

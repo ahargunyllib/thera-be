@@ -9,6 +9,14 @@ Table "admins" {
   "updated_at" timestamp [default: `CURRENT_TIMESTAMP`]
 }
 
+Table "channels" {
+  "id" varchar(36) [pk, not null]
+  "name" varchar(255) [not null]
+  "doctor_id" varchar(36) [not null]
+  "created_at" timestamp [default: `CURRENT_TIMESTAMP`]
+  "updated_at" timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
 Table "doctor_appointments" {
   "id" varchar(26) [pk, not null]
   "doctor_id" varchar(36) [not null]
@@ -48,14 +56,19 @@ Table "doctors" {
   "updated_at" timestamp [default: `CURRENT_TIMESTAMP`]
 }
 
-Table "doctors_schedules" {
-  "id" int4 [pk, not null, increment]
-  "doctor_id" varchar(36) [not null]
-  "day_of_week" int4 [not null]
-  "start_time" time [not null]
-  "end_time" time [not null]
+Table "hospital_partners" {
+  "id" varchar(26) [pk, not null]
+  "from_hospital_id" int4 [not null]
+  "to_hospital_id" int4 [not null]
+  "partner_type" int4 [not null, default: 1]
+  "status" int4 [not null, default: 1]
+  "reason" text
   "created_at" timestamp [default: `CURRENT_TIMESTAMP`]
   "updated_at" timestamp [default: `CURRENT_TIMESTAMP`]
+
+  Indexes {
+    (from_hospital_id, to_hospital_id, partner_type) [type: btree, name: "idx_hospital_partners_unique"]
+  }
 }
 
 Table "hospitals" {
@@ -70,6 +83,15 @@ Table "hospitals" {
   "latitude" numeric(9,6) [not null]
   "longitude" numeric(9,6) [not null]
   "year_established" int4 [not null]
+  "created_at" timestamp [default: `CURRENT_TIMESTAMP`]
+  "updated_at" timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table "messages" {
+  "id" varchar(36) [pk, not null]
+  "channel_id" varchar(36) [not null]
+  "content" text [not null]
+  "role" int4 [not null]
   "created_at" timestamp [default: `CURRENT_TIMESTAMP`]
   "updated_at" timestamp [default: `CURRENT_TIMESTAMP`]
 }
@@ -106,6 +128,8 @@ Table "schema_migrations" {
 
 Ref "admins_hospital_id_fkey":"hospitals"."id" < "admins"."hospital_id" [delete: cascade]
 
+Ref "channels_doctor_id_fkey":"doctors"."id" < "channels"."doctor_id" [delete: cascade]
+
 Ref "doctor_appointments_doctor_id_fkey":"doctors"."id" < "doctor_appointments"."doctor_id" [delete: cascade]
 
 Ref "doctor_appointments_patient_id_fkey":"patients"."id" < "doctor_appointments"."patient_id" [delete: cascade]
@@ -114,7 +138,11 @@ Ref "doctor_schedules_doctor_id_fkey":"doctors"."id" < "doctor_schedules"."docto
 
 Ref "doctors_hospital_id_fkey":"hospitals"."id" < "doctors"."hospital_id" [delete: cascade]
 
-Ref "doctors_schedules_doctor_id_fkey":"doctors"."id" < "doctors_schedules"."doctor_id" [delete: cascade]
+Ref "hospital_partners_from_hospital_id_fkey":"hospitals"."id" < "hospital_partners"."from_hospital_id" [delete: cascade]
+
+Ref "hospital_partners_to_hospital_id_fkey":"hospitals"."id" < "hospital_partners"."to_hospital_id" [delete: cascade]
+
+Ref "messages_channel_id_fkey":"channels"."id" < "messages"."channel_id" [delete: cascade]
 
 Ref "moods_doctor_id_fkey":"doctors"."id" < "moods"."doctor_id" [delete: cascade]
 
