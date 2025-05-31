@@ -56,8 +56,16 @@ func (d *doctorAppointmentService) CreateDoctorAppointment(
 	}
 
 	go func() {
+		notificationID, ulidErr := d.ulid.New()
+		if ulidErr != nil {
+			log.Error(log.CustomLogInfo{
+				"message": "Failed to generate ULID for doctor appointment notification",
+				"err":     ulidErr,
+			}, "[doctorAppointmentService.CreateDoctorAppointment]")
+		}
+
 		notification := entity.Notification{
-			ID: id.String(),
+			ID: notificationID.String(),
 			DoctorID: uuid.NullUUID{
 				UUID:  req.DoctorID,
 				Valid: true,
@@ -69,11 +77,11 @@ func (d *doctorAppointmentService) CreateDoctorAppointment(
 			},
 		}
 
-		err = d.doctorAppointmentRepo.CreateDoctorAppointmentNotification(ctx, &notification)
-		if err != nil {
+		ulidErr = d.doctorAppointmentRepo.CreateDoctorAppointmentNotification(ctx, &notification)
+		if ulidErr != nil {
 			log.Error(log.CustomLogInfo{
 				"message": "Failed to create doctor appointment notification",
-				"err":     err,
+				"err":     ulidErr,
 			}, "[doctorAppointmentService.CreateDoctorAppointment]")
 		}
 	}()
