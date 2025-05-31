@@ -29,8 +29,8 @@ func NewNotificationResponse(notificationEntity *entity.Notification) Notificati
 }
 
 type GetMyNotificationsQuery struct {
-	DoctorID   uuid.UUID `validate:"uuid"` // UUID of the doctor
-	HospitalID int       `validate:"uuid"` // UUID of the hospital
+	DoctorID   uuid.UUID `validate:"omitempty,uuid"` // UUID of the doctor
+	HospitalID int       `validate:"omitempty"`
 }
 
 type GetMyNotificationsResponse struct {
