@@ -1,0 +1,109 @@
+package service
+
+import (
+	"context"
+
+	"github.com/ahargunyllib/thera-be/domain/dto"
+	"github.com/ahargunyllib/thera-be/domain/entity"
+	openai "github.com/ahargunyllib/thera-be/pkg/opeanai"
+	"github.com/google/uuid"
+)
+
+// CreateMessage implements contracts.ChatbotService.
+func (c *chatBotService) CreateMessage(
+	ctx context.Context,
+	req dto.CreateMessageRequest,
+) (dto.CreateMessageResponse, error) {
+	valErr := c.validator.Validate(req)
+	if valErr != nil {
+		return dto.CreateMessageResponse{}, valErr
+	}
+
+	if req.ChannelID == uuid.Nil {
+		channelID, err := c.uuid.NewV7()
+		if err != nil {
+			return dto.CreateMessageResponse{}, err
+		}
+
+		req.ChannelID = channelID
+	}
+
+	messageID, err := c.uuid.NewV7()
+	if err != nil {
+		return dto.CreateMessageResponse{}, err
+	}
+
+	userMessage := &entity.Message{
+		ID:        messageID,
+		ChannelID: req.ChannelID,
+		Content:   req.Content,
+		Role:      1, // user
+	}
+
+	err = c.chatBotRepo.Begin(ctx)
+	if err != nil {
+		return dto.CreateMessageResponse{}, err
+	}
+
+	messages, err := c.chatBotRepo.GetMessagesByChannelID(ctx, req.ChannelID)
+	if err != nil {
+		_ = c.chatBotRepo.Rollback()
+		return dto.CreateMessageResponse{}, err
+	}
+
+	historyMessages := make([]openai.Message, len(messages)+1)
+	historyMessages[0] = openai.Message{
+		Content: req.Content,
+		Role:    "user",
+	}
+	for i, message := range messages {
+		var role string
+		if message.Role == 1 {
+			role = "user"
+		} else {
+			role = "assistant"
+		}
+
+		historyMessages[i+1] = openai.Message{
+			Content: message.Content,
+			Role:    role,
+		}
+	}
+
+	chatRes, err := c.openai.Chat(ctx, historyMessages)
+	if err != nil {
+		_ = c.chatBotRepo.Rollback()
+		return dto.CreateMessageResponse{}, err
+	}
+
+	assistantMessageID, err := c.uuid.NewV7()
+	if err != nil {
+		_ = c.chatBotRepo.Rollback()
+		return dto.CreateMessageResponse{}, err
+	}
+
+	assistantMessage := &entity.Message{
+		ID:        assistantMessageID,
+		ChannelID: req.ChannelID,
+		Content:   chatRes.Choices[0].Message.Content,
+		Role:      2, // assistant
+	}
+
+	err = c.chatBotRepo.CreateMessage(ctx, userMessage)
+	if err != nil {
+		_ = c.chatBotRepo.Rollback()
+		return dto.CreateMessageResponse{}, err
+	}
+
+	err = c.chatBotRepo.Commit()
+	if err != nil {
+		_ = c.chatBotRepo.Rollback()
+		return dto.CreateMessageResponse{}, err
+	}
+
+	res := dto.CreateMessageResponse{
+		Message: dto.NewMessageResponse(assistantMessage),
+	}
+
+	return res, nil
+}

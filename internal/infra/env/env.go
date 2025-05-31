@@ -29,6 +29,7 @@ type Env struct {
 	AWSAccessKeyID     string        `mapstructure:"AWS_ACCESS_KEY_ID"`
 	AWSSecretAccessKey string        `mapstructure:"AWS_SECRET_ACCESS_KEY"`
 	R2AccountID        string        `mapstructure:"R2_ACCOUNT_ID"`
+	OpenAIKey          string        `mapstructure:"OPENAI_KEY"`
 }
 
 var AppEnv = getEnv()

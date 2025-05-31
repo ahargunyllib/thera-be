@@ -1,0 +1,13 @@
+CREATE TBABLE messages (
+	id VARCHAR(36) PRIMARY KEY,
+	channel_id VARCHAR(36) NOT NULL REFERENCES channels(id) ON DELETE CASCADE,
+	content TEXT NOT NULL,
+	role INT NOT NULL,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TRIGGER update_messages_updated_at
+AFTER UPDATE ON messages
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_at_column();

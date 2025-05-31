@@ -4,6 +4,9 @@ import (
 	adminController "github.com/ahargunyllib/thera-be/internal/app/admin/controller"
 	adminRepo "github.com/ahargunyllib/thera-be/internal/app/admin/repository"
 	adminSvc "github.com/ahargunyllib/thera-be/internal/app/admin/service"
+	chatBotController "github.com/ahargunyllib/thera-be/internal/app/chat_bot/controller"
+	chatBotRepository "github.com/ahargunyllib/thera-be/internal/app/chat_bot/repository"
+	chatBotSvc "github.com/ahargunyllib/thera-be/internal/app/chat_bot/service"
 	doctorController "github.com/ahargunyllib/thera-be/internal/app/doctor/controller"
 	doctorRepo "github.com/ahargunyllib/thera-be/internal/app/doctor/repository"
 	doctorSvc "github.com/ahargunyllib/thera-be/internal/app/doctor/service"
@@ -28,6 +31,7 @@ import (
 	"github.com/ahargunyllib/thera-be/pkg/helpers/http/response"
 	"github.com/ahargunyllib/thera-be/pkg/jwt"
 	"github.com/ahargunyllib/thera-be/pkg/log"
+	openai "github.com/ahargunyllib/thera-be/pkg/opeanai"
 	"github.com/ahargunyllib/thera-be/pkg/ulid"
 	"github.com/ahargunyllib/thera-be/pkg/uuid"
 	"github.com/ahargunyllib/thera-be/pkg/validator"
@@ -97,6 +101,7 @@ func (s *httpServer) MountRoutes(db *sqlx.DB, redis *redis.Client) {
 	jwt := jwt.Jwt
 	uuid := uuid.UUID
 	ulid := ulid.ULID
+	openai := openai.OpenAI
 
 	s.app.Get("/", func(c *fiber.Ctx) error {
 		return response.SendResponse(c, fiber.StatusOK, "Thera BE is running")
@@ -116,6 +121,7 @@ func (s *httpServer) MountRoutes(db *sqlx.DB, redis *redis.Client) {
 	moodRepository := moodRepo.NewMoodRepository(db)
 	doctorScheduleRepository := doctorScheduleRepo.NewDoctorScheduleRepository(db)
 	doctorAppointmentRepository := doctorAppointmentRepo.NewDoctorAppointmentRepository(db)
+	chatBotRepository := chatBotRepository.NewChatBotRepository(db)
 
 	hospitalService := hospitalSvc.NewHospitalService(hospitalRepository, validator)
 	adminService := adminSvc.NewAdminService(adminRepository, validator, bcrypt, jwt)
@@ -123,7 +129,12 @@ func (s *httpServer) MountRoutes(db *sqlx.DB, redis *redis.Client) {
 	patientService := patientSvc.NewPatientService(patientRepository, validator, uuid)
 	moodService := moodSvc.NewMoodService(moodRepository, validator)
 	doctorScheduleService := doctorScheduleSvc.NewDoctorScheduleService(doctorScheduleRepository, validator)
-	doctorAppointmentService := doctorAppointmentSvc.NewDoctorAppointmentService(doctorAppointmentRepository, validator, ulid)
+	doctorAppointmentService := doctorAppointmentSvc.NewDoctorAppointmentService(
+		doctorAppointmentRepository,
+		validator,
+		ulid,
+	)
+	chatBotService := chatBotSvc.NewChatBotService(chatBotRepository, validator, uuid, openai)
 
 	middleware := middlewares.NewMiddleware(jwt)
 
@@ -134,6 +145,7 @@ func (s *httpServer) MountRoutes(db *sqlx.DB, redis *redis.Client) {
 	moodController.InitMoodController(v1, moodService, middleware)
 	doctorScheduleController.InitDoctorScheduleController(v1, doctorScheduleService, middleware)
 	doctorAppointmentController.InitDoctorAppointmentController(v1, doctorAppointmentService, middleware)
+	chatBotController.InitChatBotController(v1, chatBotService, middleware)
 
 	s.app.Use(func(c *fiber.Ctx) error {
 		return c.SendFile("./web/not-found.html")
