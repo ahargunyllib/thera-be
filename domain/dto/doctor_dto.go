@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/ahargunyllib/thera-be/domain/entity"
+	"github.com/ahargunyllib/thera-be/domain/enums"
 	"github.com/google/uuid"
 )
 
@@ -24,7 +25,7 @@ func NewDoctorResponse(doctorEntity *entity.Doctor) DoctorResponse {
 		FullName:    doctorEntity.FullName,
 		Email:       doctorEntity.Email,
 		PhoneNumber: doctorEntity.PhoneNumber.String,
-		Specialty:   "",
+		Specialty:   enums.DoctorSpecialtyMapIdx[doctorEntity.Specialty].LongLabel["id"],
 		Hospital:    NewHospitalResponse(&doctorEntity.Hospital),
 		CreatedAt:   doctorEntity.CreatedAt,
 		UpdatedAt:   doctorEntity.UpdatedAt,

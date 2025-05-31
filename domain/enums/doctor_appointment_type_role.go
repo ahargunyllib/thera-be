@@ -22,6 +22,7 @@ const (
 	DoctorAppointmentTypeFollowupIdx     DoctorAppointmentTypeIdx = 3
 	DoctorAppointmentTypeEmergencyIdx    DoctorAppointmentTypeIdx = 4
 	DoctorAppointmentTypeTelemedicineIdx DoctorAppointmentTypeIdx = 5
+	DoctorAppointmentTypeSurgeryIdx      DoctorAppointmentTypeIdx = 6
 
 	DoctorAppointmentTypeUnknownKey      DoctorAppointmentTypeKey = "unknown"
 	DoctorAppointmentTypeConsultationKey DoctorAppointmentTypeKey = "consultation"
@@ -29,6 +30,7 @@ const (
 	DoctorAppointmentTypeFollowupKey     DoctorAppointmentTypeKey = "followup"
 	DoctorAppointmentTypeEmergencyKey    DoctorAppointmentTypeKey = "emergency"
 	DoctorAppointmentTypeTelemedicineKey DoctorAppointmentTypeKey = "telemedicine"
+	DoctorAppointmentTypeSurgeryKey      DoctorAppointmentTypeKey = "surgery"
 )
 
 var (
@@ -68,6 +70,12 @@ var (
 		LongLabel:  map[string]string{"id": "Telemedicine", "en": "Telemedicine"},
 		ShortLabel: map[string]string{"id": "TLM", "en": "TLM"},
 	}
+	DoctorAppointmentTypeSurgeryValue = DoctorAppointmentTypeValue{
+		Idx:        int64(DoctorAppointmentTypeSurgeryIdx),
+		Key:        string(DoctorAppointmentTypeSurgeryKey),
+		LongLabel:  map[string]string{"id": "Operasi", "en": "Surgery"},
+		ShortLabel: map[string]string{"id": "OP", "en": "SRG"},
+	}
 )
 
 var (
@@ -78,6 +86,7 @@ var (
 		DoctorAppointmentTypeFollowupIdx:     DoctorAppointmentTypeFollowupValue,
 		DoctorAppointmentTypeEmergencyIdx:    DoctorAppointmentTypeEmergencyValue,
 		DoctorAppointmentTypeTelemedicineIdx: DoctorAppointmentTypeTelemedicineValue,
+		DoctorAppointmentTypeSurgeryIdx:      DoctorAppointmentTypeSurgeryValue,
 	}
 	DoctorAppointmentTypeMapKey = map[DoctorAppointmentTypeKey]DoctorAppointmentTypeValue{
 		DoctorAppointmentTypeUnknownKey:      DoctorAppointmentTypeUnknownValue,
@@ -86,6 +95,7 @@ var (
 		DoctorAppointmentTypeFollowupKey:     DoctorAppointmentTypeFollowupValue,
 		DoctorAppointmentTypeEmergencyKey:    DoctorAppointmentTypeEmergencyValue,
 		DoctorAppointmentTypeTelemedicineKey: DoctorAppointmentTypeTelemedicineValue,
+		DoctorAppointmentTypeSurgeryKey:      DoctorAppointmentTypeSurgeryValue,
 	}
 )
 

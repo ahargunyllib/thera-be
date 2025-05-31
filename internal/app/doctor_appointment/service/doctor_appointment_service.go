@@ -5,6 +5,7 @@ import (
 
 	"github.com/ahargunyllib/thera-be/domain/dto"
 	"github.com/ahargunyllib/thera-be/domain/entity"
+	"github.com/ahargunyllib/thera-be/domain/enums"
 )
 
 func (d *doctorAppointmentService) CreateDoctorAppointment(
@@ -28,8 +29,8 @@ func (d *doctorAppointmentService) CreateDoctorAppointment(
 		AppointmentDate: req.AppointmentDate,
 		StartTime:       req.StartTime,
 		EndTime:         req.EndTime,
-		Status:          1,
-		Type:            1,
+		Status:          enums.DoctorAppointmentStatusPendingIdx,
+		Type:            enums.DoctorAppointmentTypeConsultationIdx,
 	}
 
 	err = d.doctorAppointmentRepo.CreateDoctorAppointment(ctx, &doctorAppointment)
@@ -105,8 +106,8 @@ func (d *doctorAppointmentService) UpdateDoctorAppointment(
 		AppointmentDate: req.AppointmentDate,
 		StartTime:       req.StartTime,
 		EndTime:         req.EndTime,
-		Status:          1,
-		Type:            1,
+		Status:          enums.DoctorAppointmentStatusPendingIdx,
+		Type:            enums.DoctorAppointmentTypeConsultationIdx,
 	}
 
 	err := d.doctorAppointmentRepo.UpdateDoctorAppointment(ctx, &doctorAppointment)

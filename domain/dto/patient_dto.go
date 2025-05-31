@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/ahargunyllib/thera-be/domain/entity"
+	"github.com/ahargunyllib/thera-be/domain/enums"
 	"github.com/google/uuid"
 )
 
@@ -33,10 +34,10 @@ func NewPatientResponse(patientEntity *entity.Patient) PatientResponse {
 		PhoneNumber:         patientEntity.PhoneNumber.String,
 		Address:             patientEntity.Address,
 		DateOfBirth:         patientEntity.DateOfBirth,
-		Gender:              "", // TODO
+		Gender:              enums.GenderMapIdx[patientEntity.Gender].LongLabel["id"],
 		Height:              patientEntity.Height,
 		Weight:              patientEntity.Weight,
-		BloodType:           "", // TODO
+		BloodType:           enums.BloodTypeMapIdx[patientEntity.BloodType].LongLabel["id"],
 		Allergies:           patientEntity.Allergies.String,
 		MedicalRecordNumber: patientEntity.MedicalRecordNumber,
 		Hospital:            NewHospitalResponse(&patientEntity.Hospital),

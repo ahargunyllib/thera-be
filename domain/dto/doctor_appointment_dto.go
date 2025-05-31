@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/ahargunyllib/thera-be/domain/entity"
+	"github.com/ahargunyllib/thera-be/domain/enums"
 	"github.com/google/uuid"
 )
 
@@ -28,8 +29,8 @@ func NewDoctorAppointmentResponse(doctorAppointmentEntity *entity.DoctorAppointm
 		AppointmentDate: doctorAppointmentEntity.AppointmentDate,
 		StartTime:       doctorAppointmentEntity.StartTime,
 		EndTime:         doctorAppointmentEntity.EndTime,
-		Status:          "",
-		Type:            "",
+		Status:          enums.DoctorAppointmentStatusMapIdx[doctorAppointmentEntity.Status].LongLabel["id"],
+		Type:            enums.DoctorAppointmentTypeMapIdx[doctorAppointmentEntity.Type].LongLabel["id"],
 		CreatedAt:       doctorAppointmentEntity.CreatedAt,
 		UpdatedAt:       doctorAppointmentEntity.UpdatedAt,
 	}

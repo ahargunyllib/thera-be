@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/ahargunyllib/thera-be/domain/entity"
+	"github.com/ahargunyllib/thera-be/domain/enums"
 	"github.com/google/uuid"
 )
 
@@ -22,7 +23,7 @@ func NewAdminResponse(adminEntity *entity.Admin) AdminResponse {
 		ID:        adminEntity.ID,
 		Email:     adminEntity.Email,
 		FullName:  adminEntity.FullName,
-		Role:      "", // TODO
+		Role:      enums.AdminRoleMapIdx[adminEntity.Role].LongLabel["id"],
 		Hospital:  NewHospitalResponse(&adminEntity.Hospital),
 		CreatedAt: adminEntity.CreatedAt,
 		UpdatedAt: adminEntity.UpdatedAt,

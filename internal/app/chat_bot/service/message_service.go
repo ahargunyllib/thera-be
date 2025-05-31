@@ -5,6 +5,7 @@ import (
 
 	"github.com/ahargunyllib/thera-be/domain/dto"
 	"github.com/ahargunyllib/thera-be/domain/entity"
+	"github.com/ahargunyllib/thera-be/domain/enums"
 	openai "github.com/ahargunyllib/thera-be/pkg/opeanai"
 	"github.com/google/uuid"
 )
@@ -40,7 +41,7 @@ func (c *chatBotService) CreateMessage(
 		ID:        messageID,
 		ChannelID: req.ChannelID,
 		Content:   req.Content,
-		Role:      1, // user
+		Role:      enums.MessageRoleUserIdx,
 	}
 
 	err = c.chatBotRepo.Begin(ctx)
@@ -54,20 +55,29 @@ func (c *chatBotService) CreateMessage(
 		return dto.CreateMessageResponse{}, err
 	}
 
-	historyMessages := make([]openai.Message, len(messages)+1)
-	historyMessages[0] = openai.Message{
+	historyMessages := make([]openai.Message, len(messages)+2)
+	historyMessages[1] = openai.Message{
+		Content: `
+			You are an assistant specialized in mental health consultation for doctors and medical professionals.
+			Your role is to provide empathetic, professional, and evidence-based advice
+				to help them navigate their mental health challenges.
+			Please ensure that all responses remain within the context of mental health and avoid discussing unrelated topics.
+		`,
+		Role: "assistant",
+	}
+	historyMessages[1] = openai.Message{
 		Content: req.Content,
 		Role:    "user",
 	}
 	for i, message := range messages {
 		var role string
-		if message.Role == 1 {
+		if message.Role == enums.MessageRoleUserIdx {
 			role = "user"
 		} else {
 			role = "assistant"
 		}
 
-		historyMessages[i+1] = openai.Message{
+		historyMessages[i+2] = openai.Message{
 			Content: message.Content,
 			Role:    role,
 		}
@@ -89,7 +99,7 @@ func (c *chatBotService) CreateMessage(
 		ID:        assistantMessageID,
 		ChannelID: req.ChannelID,
 		Content:   chatRes.Choices[0].Message.Content,
-		Role:      2, // assistant
+		Role:      enums.MessageRoleAssistantIdx,
 	}
 
 	err = c.chatBotRepo.CreateMessage(ctx, userMessage)

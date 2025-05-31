@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/ahargunyllib/thera-be/domain/entity"
+	"github.com/ahargunyllib/thera-be/domain/enums"
 )
 
 type HospitalResponse struct {
@@ -13,6 +14,8 @@ type HospitalResponse struct {
 	Phone           string    `json:"phone,omitempty"`
 	Email           string    `json:"email,omitempty"`
 	Website         string    `json:"website,omitempty"`
+	Type            string    `json:"type"`
+	Status          string    `json:"status"`
 	Latitude        float64   `json:"latitude"`
 	Longitude       float64   `json:"longitude"`
 	YearEstablished int       `json:"year_established"`
@@ -28,6 +31,8 @@ func NewHospitalResponse(hospitalEntity *entity.Hospital) HospitalResponse {
 		Phone:           hospitalEntity.Phone.String,
 		Email:           hospitalEntity.Email.String,
 		Website:         hospitalEntity.Website.String,
+		Type:            enums.HospitalTypeMapIdx[hospitalEntity.Type].LongLabel["id"],
+		Status:          enums.HospitalStatusMapIdx[hospitalEntity.Status].LongLabel["id"],
 		Latitude:        hospitalEntity.Latitude,
 		Longitude:       hospitalEntity.Longitude,
 		YearEstablished: hospitalEntity.YearEstablished,

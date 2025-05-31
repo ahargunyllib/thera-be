@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/ahargunyllib/thera-be/domain/entity"
+	"github.com/ahargunyllib/thera-be/domain/enums"
 	"github.com/google/uuid"
 )
 
@@ -56,7 +57,7 @@ func NewMessageResponse(messageEntity *entity.Message) MessageResponse {
 		ID: messageEntity.ID,
 		// Channel:   NewChannelResponse(&messageEntity.Channel),
 		Content:   messageEntity.Content,
-		Role:      "user",
+		Role:      enums.MessageRoleMapIdx[messageEntity.Role].LongLabel["id"],
 		CreatedAt: messageEntity.CreatedAt,
 		UpdatedAt: messageEntity.UpdatedAt,
 	}

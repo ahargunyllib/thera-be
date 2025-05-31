@@ -6,6 +6,7 @@ import (
 
 	"github.com/ahargunyllib/thera-be/domain/dto"
 	"github.com/ahargunyllib/thera-be/domain/entity"
+	"github.com/ahargunyllib/thera-be/domain/enums"
 )
 
 func (ps *patientService) CreatePatient(ctx context.Context, req dto.CreatePatientRequest) error {
@@ -29,10 +30,10 @@ func (ps *patientService) CreatePatient(ctx context.Context, req dto.CreatePatie
 		},
 		Address:     req.Address,
 		DateOfBirth: req.DateOfBirth,
-		Gender:      1, // TODO
+		Gender:      enums.GenderMaleIdx,
 		Height:      req.Height,
 		Weight:      req.Weight,
-		BloodType:   1, // TODO
+		BloodType:   enums.BloodTypeABIdx,
 		Allergies: sql.NullString{
 			String: req.Allergies,
 			Valid:  req.Allergies != "",
