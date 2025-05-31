@@ -6,5 +6,6 @@ CREATE TABLE notifications (
   body TEXT NULL,
   type INT NOT NULL DEFAULT(1),
   read_at TIMESTAMP NULL,
+	metadata JSONB NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

@@ -16,5 +16,6 @@ type Notification struct {
 	Body       sql.NullString            `db:"body"`
 	Type       enums.NotificationTypeIdx `db:"type"`
 	ReadAt     sql.NullTime              `db:"read_at"` // Nullable time for read status
+	Metadata   map[string]any            `db:"metadata"`
 	CreatedAt  time.Time                 `db:"created_at"`
 }

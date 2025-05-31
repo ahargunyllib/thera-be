@@ -9,12 +9,13 @@ import (
 )
 
 type NotificationResponse struct {
-	ID        string    `json:"id"` // ulid
-	Title     string    `json:"title"`
-	Body      string    `json:"body,omitempty"`
-	Type      string    `json:"type"`
-	IsRead    bool      `json:"is_read"`
-	CreatedAt time.Time `json:"created_at"`
+	ID        string         `json:"id"` // ulid
+	Title     string         `json:"title"`
+	Body      string         `json:"body,omitempty"`
+	Type      string         `json:"type"`
+	IsRead    bool           `json:"is_read"`
+	Metadata  map[string]any `json:"metadata,omitempty"`
+	CreatedAt time.Time      `json:"created_at"`
 }
 
 func NewNotificationResponse(notificationEntity *entity.Notification) NotificationResponse {

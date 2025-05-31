@@ -16,7 +16,7 @@ func (n *notificationRepository) GetNotificationsByDoctorID(
 	var qb strings.Builder
 
 	qb.WriteString(`
-		SELECT id, title, body, type, read_at, created_at
+		SELECT id, title, body, type, read_at, metadata, created_at
 		FROM notifications
 		WHERE doctor_id = $1
 	`)
@@ -37,7 +37,7 @@ func (n *notificationRepository) GetNotificationsByHospitalID(
 	var qb strings.Builder
 
 	qb.WriteString(`
-		SELECT id, title, body, type, read_at, created_at
+		SELECT id, title, body, type, read_at, metadata, created_at
 		FROM notifications
 		WHERE hospital_id = $1
 	`)

@@ -17,6 +17,7 @@ func (mr *moodRepository) GetDoctorByID(
 	var qb strings.Builder
 	qb.WriteString(`
 		SELECT
+			id,
 			full_name,
 			hospital_id
 		FROM doctors
