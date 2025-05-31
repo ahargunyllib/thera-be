@@ -11,7 +11,7 @@ import (
 type Notification struct {
 	ID         string                    `db:"id"` // ulid
 	DoctorID   uuid.NullUUID             `db:"doctor_id"`
-	HospitalID uuid.NullUUID             `db:"hospital_id"`
+	HospitalID sql.NullInt64             `db:"hospital_id"`
 	Title      string                    `db:"title"`
 	Body       sql.NullString            `db:"body"`
 	Type       enums.NotificationTypeIdx `db:"type"`

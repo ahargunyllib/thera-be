@@ -12,6 +12,16 @@ type MoodRepository interface {
 	CreateMood(ctx context.Context, mood *entity.Mood) error
 	GetMyDailyMood(ctx context.Context, doctorID uuid.UUID) ([]entity.Mood, error)
 	GetMyMonthlyOverview(ctx context.Context, doctorID uuid.UUID) ([]entity.MonthlyMoodStatistic, error)
+
+	CreateMoodNotification(
+		ctx context.Context,
+		notification *entity.Notification,
+	) error
+
+	GetDoctorByID(
+		ctx context.Context,
+		doctorID uuid.UUID,
+	) (*entity.Doctor, error)
 }
 
 type MoodService interface {
