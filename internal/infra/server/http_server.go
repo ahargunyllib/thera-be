@@ -7,6 +7,9 @@ import (
 	doctorController "github.com/ahargunyllib/thera-be/internal/app/doctor/controller"
 	doctorRepo "github.com/ahargunyllib/thera-be/internal/app/doctor/repository"
 	doctorSvc "github.com/ahargunyllib/thera-be/internal/app/doctor/service"
+	doctorAppointmentController "github.com/ahargunyllib/thera-be/internal/app/doctor_appointment/controller"
+	doctorAppointmentRepo "github.com/ahargunyllib/thera-be/internal/app/doctor_appointment/repository"
+	doctorAppointmentSvc "github.com/ahargunyllib/thera-be/internal/app/doctor_appointment/service"
 	doctorScheduleController "github.com/ahargunyllib/thera-be/internal/app/doctor_schedule/controller"
 	doctorScheduleRepo "github.com/ahargunyllib/thera-be/internal/app/doctor_schedule/repository"
 	doctorScheduleSvc "github.com/ahargunyllib/thera-be/internal/app/doctor_schedule/service"
@@ -25,6 +28,7 @@ import (
 	"github.com/ahargunyllib/thera-be/pkg/helpers/http/response"
 	"github.com/ahargunyllib/thera-be/pkg/jwt"
 	"github.com/ahargunyllib/thera-be/pkg/log"
+	"github.com/ahargunyllib/thera-be/pkg/ulid"
 	"github.com/ahargunyllib/thera-be/pkg/uuid"
 	"github.com/ahargunyllib/thera-be/pkg/validator"
 	"github.com/bytedance/sonic"
@@ -92,6 +96,7 @@ func (s *httpServer) MountRoutes(db *sqlx.DB, redis *redis.Client) {
 	bcrypt := bcrypt.Bcrypt
 	jwt := jwt.Jwt
 	uuid := uuid.UUID
+	ulid := ulid.ULID
 
 	s.app.Get("/", func(c *fiber.Ctx) error {
 		return response.SendResponse(c, fiber.StatusOK, "Thera BE is running")
@@ -110,6 +115,7 @@ func (s *httpServer) MountRoutes(db *sqlx.DB, redis *redis.Client) {
 	patientRepository := patientRepo.NewPatientRepository(db)
 	moodRepository := moodRepo.NewMoodRepository(db)
 	doctorScheduleRepository := doctorScheduleRepo.NewDoctorScheduleRepository(db)
+	doctorAppointmentRepository := doctorAppointmentRepo.NewDoctorAppointmentRepository(db)
 
 	hospitalService := hospitalSvc.NewHospitalService(hospitalRepository, validator)
 	adminService := adminSvc.NewAdminService(adminRepository, validator, bcrypt, jwt)
@@ -117,6 +123,7 @@ func (s *httpServer) MountRoutes(db *sqlx.DB, redis *redis.Client) {
 	patientService := patientSvc.NewPatientService(patientRepository, validator, uuid)
 	moodService := moodSvc.NewMoodService(moodRepository, validator)
 	doctorScheduleService := doctorScheduleSvc.NewDoctorScheduleService(doctorScheduleRepository, validator)
+	doctorAppointmentService := doctorAppointmentSvc.NewDoctorAppointmentService(doctorAppointmentRepository, validator, ulid)
 
 	middleware := middlewares.NewMiddleware(jwt)
 
@@ -126,6 +133,7 @@ func (s *httpServer) MountRoutes(db *sqlx.DB, redis *redis.Client) {
 	patientController.InitPatientController(v1, patientService, middleware)
 	moodController.InitMoodController(v1, moodService, middleware)
 	doctorScheduleController.InitDoctorScheduleController(v1, doctorScheduleService, middleware)
+	doctorAppointmentController.InitDoctorAppointmentController(v1, doctorAppointmentService, middleware)
 
 	s.app.Use(func(c *fiber.Ctx) error {
 		return c.SendFile("./web/not-found.html")
