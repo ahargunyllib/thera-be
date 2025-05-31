@@ -6,6 +6,7 @@ import (
 
 	"github.com/ahargunyllib/thera-be/domain/enums"
 	"github.com/google/uuid"
+	"github.com/jmoiron/sqlx/types"
 )
 
 type Notification struct {
@@ -16,6 +17,6 @@ type Notification struct {
 	Body       sql.NullString            `db:"body"`
 	Type       enums.NotificationTypeIdx `db:"type"`
 	ReadAt     sql.NullTime              `db:"read_at"` // Nullable time for read status
-	Metadata   map[string]any            `db:"metadata"`
+	Metadata   types.JSONText            `db:"metadata"`
 	CreatedAt  time.Time                 `db:"created_at"`
 }

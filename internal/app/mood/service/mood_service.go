@@ -9,6 +9,7 @@ import (
 	"github.com/ahargunyllib/thera-be/domain/entity"
 	"github.com/ahargunyllib/thera-be/domain/enums"
 	"github.com/ahargunyllib/thera-be/pkg/log"
+	"github.com/jmoiron/sqlx/types"
 )
 
 func (ms *moodService) CreateMood(ctx context.Context, req dto.CreateMoodRequest) error {
@@ -47,6 +48,10 @@ func (ms *moodService) CreateMood(ctx context.Context, req dto.CreateMoodRequest
 				return
 			}
 
+			metadata := types.JSONText(
+				fmt.Sprintf(`{"doctor_id":"%s"}`, doctor.ID),
+			)
+
 			notification := entity.Notification{
 				ID: id.String(),
 				HospitalID: sql.NullInt64{
@@ -62,10 +67,8 @@ func (ms *moodService) CreateMood(ctx context.Context, req dto.CreateMoodRequest
 					),
 					Valid: true,
 				},
-				Type: enums.NotificationTypeImproveNextDoctorScheduleIdx,
-				Metadata: map[string]any{
-					"doctor_id": doctor.ID,
-				},
+				Type:     enums.NotificationTypeImproveNextDoctorScheduleIdx,
+				Metadata: metadata,
 			}
 
 			getDoctorError = ms.moodRepo.CreateMoodNotification(ctx, &notification)

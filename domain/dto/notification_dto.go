@@ -6,6 +6,7 @@ import (
 	"github.com/ahargunyllib/thera-be/domain/entity"
 	"github.com/ahargunyllib/thera-be/domain/enums"
 	"github.com/google/uuid"
+	"github.com/jmoiron/sqlx/types"
 )
 
 type NotificationResponse struct {
@@ -14,7 +15,7 @@ type NotificationResponse struct {
 	Body      string         `json:"body,omitempty"`
 	Type      string         `json:"type"`
 	IsRead    bool           `json:"is_read"`
-	Metadata  map[string]any `json:"metadata,omitempty"`
+	Metadata  types.JSONText `json:"metadata,omitempty"`
 	CreatedAt time.Time      `json:"created_at"`
 }
 
