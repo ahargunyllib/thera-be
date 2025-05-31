@@ -5,7 +5,6 @@ import (
 
 	"github.com/ahargunyllib/thera-be/domain/entity"
 	"github.com/ahargunyllib/thera-be/domain/enums"
-	"github.com/google/uuid"
 )
 
 type HospitalPartnerResponse struct {
@@ -31,7 +30,7 @@ func NewHospitalPartnerResponse(hospitalPartnerEntity *entity.HospitalPartner) H
 }
 
 type GetMyHospitalPartnersQuery struct {
-	FromHospitalID uuid.UUID `validate:"required,uuid"`
+	HospitalID int `validate:"required"`
 }
 
 type GetHospitalPartnersResponse struct {
@@ -39,9 +38,9 @@ type GetHospitalPartnersResponse struct {
 }
 
 type CreateHospitalPartnerRequest struct {
-	FromHospitalID uuid.UUID `json:"from_hospital_id" validate:"required,uuid"`
-	ToHospitalID   uuid.UUID `json:"to_hospital_id" validate:"required,uuid"`
-	PartnerType    string    `json:"partner_type" validate:"required,oneof=collaboration"`
+	FromHospitalID int    `validate:"required"`
+	ToHospitalID   int    `json:"to_hospital_id" validate:"required"`
+	PartnerType    string `json:"partner_type" validate:"required,oneof=collaboration"`
 }
 
 type UpdateHospitalPartnerParams struct {

@@ -2,7 +2,9 @@ package controller
 
 import (
 	"github.com/ahargunyllib/thera-be/domain/dto"
+	"github.com/ahargunyllib/thera-be/domain/errx"
 	"github.com/ahargunyllib/thera-be/pkg/helpers/http/response"
+	"github.com/ahargunyllib/thera-be/pkg/jwt"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -11,6 +13,13 @@ func (c *hospitalPartnerController) getMyHospitalPartners(ctx *fiber.Ctx) error 
 	if err := ctx.QueryParser(&query); err != nil {
 		return err
 	}
+
+	claims, ok := ctx.Locals("claims").(jwt.Claims)
+	if !ok {
+		return errx.ErrClaimsNotFound
+	}
+
+	query.HospitalID = claims.HospitalID
 
 	res, err := c.hospitalPartnerSvc.GetHospitalPartnersByHospitalID(ctx.Context(), query)
 	if err != nil {
@@ -25,6 +34,13 @@ func (c *hospitalPartnerController) createHospitalPartner(ctx *fiber.Ctx) error 
 	if err := ctx.BodyParser(&req); err != nil {
 		return err
 	}
+
+	claims, ok := ctx.Locals("claims").(jwt.Claims)
+	if !ok {
+		return errx.ErrClaimsNotFound
+	}
+
+	req.FromHospitalID = claims.HospitalID
 
 	err := c.hospitalPartnerSvc.CreateHospitalPartner(ctx.Context(), req)
 	if err != nil {

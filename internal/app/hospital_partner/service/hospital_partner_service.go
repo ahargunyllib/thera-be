@@ -41,7 +41,7 @@ func (h *hospitalPartnerService) GetHospitalPartnersByHospitalID(ctx context.Con
 		return dto.GetHospitalPartnersResponse{}, valErr
 	}
 
-	hospitalPartners, err := h.hospitalPartnerRepo.GetHospitalPartnersByHospitalID(ctx, query.FromHospitalID)
+	hospitalPartners, err := h.hospitalPartnerRepo.GetHospitalPartnersByHospitalID(ctx, query.HospitalID)
 	if err != nil {
 		return dto.GetHospitalPartnersResponse{}, err
 	}

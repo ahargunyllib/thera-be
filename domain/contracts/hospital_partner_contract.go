@@ -5,11 +5,10 @@ import (
 
 	"github.com/ahargunyllib/thera-be/domain/dto"
 	"github.com/ahargunyllib/thera-be/domain/entity"
-	"github.com/google/uuid"
 )
 
 type HospitalPartnerRepository interface {
-	GetHospitalPartnersByHospitalID(ctx context.Context, hospitalID uuid.UUID) ([]entity.HospitalPartner, error)
+	GetHospitalPartnersByHospitalID(ctx context.Context, hospitalID int) ([]entity.HospitalPartner, error)
 	GetHospitalPartnerByID(ctx context.Context, id string) (*entity.HospitalPartner, error)
 	CreateHospitalPartner(ctx context.Context, hospitalPartner *entity.HospitalPartner) error
 	UpdateHospitalPartner(ctx context.Context, hospitalPartner *entity.HospitalPartner) error

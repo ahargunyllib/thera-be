@@ -8,7 +8,6 @@ import (
 
 	"github.com/ahargunyllib/thera-be/domain/entity"
 	"github.com/ahargunyllib/thera-be/domain/errx"
-	"github.com/google/uuid"
 )
 
 func (h *hospitalPartnerRepository) GetHospitalPartnerByID(ctx context.Context, id string) (
@@ -20,13 +19,13 @@ func (h *hospitalPartnerRepository) GetHospitalPartnerByID(ctx context.Context, 
 	var qb strings.Builder
 	qb.WriteString(`
 		SELECT
-			id,
-			from_hospital_id,
-			to_hospital_id,
-			type,
-			status,
-			created_at,
-			updated_at,
+			hospital_partners.id,
+			hospital_partners.from_hospital_id,
+			hospital_partners.to_hospital_id,
+			hospital_partners.partner_type,
+			hospital_partners.status,
+			hospital_partners.created_at,
+			hospital_partners.updated_at,
 			from_hospital.id AS "from_hospital.id",
 			from_hospital.name AS "from_hospital.name",
 			to_hospital.id AS "to_hospital.id",
@@ -59,9 +58,9 @@ func (h *hospitalPartnerRepository) CreateHospitalPartner(
 
 	qb.WriteString(`
 		INSERT INTO hospital_partners
-			(id, from_hospital_id, to_hospital_id, type, status)
+			(id, from_hospital_id, to_hospital_id, partner_type, status)
 		VALUES
-			(:id, :from_hospital_id, :to_hospital_id, :type, :status)
+			(:id, :from_hospital_id, :to_hospital_id, :partner_type, :status)
 	`)
 	_, err := h.db.NamedExecContext(ctx, qb.String(), hospitalPartner)
 	if err != nil {
@@ -73,20 +72,20 @@ func (h *hospitalPartnerRepository) CreateHospitalPartner(
 
 func (h *hospitalPartnerRepository) GetHospitalPartnersByHospitalID(
 	ctx context.Context,
-	hospitalID uuid.UUID,
+	hospitalID int,
 ) ([]entity.HospitalPartner, error) {
 	var hospitalPartners []entity.HospitalPartner
 
 	var qb strings.Builder
 	qb.WriteString(`
 		SELECT
-			id,
-			from_hospital_id,
-			to_hospital_id,
-			type,
-			status,
-			created_at,
-			updated_at,
+			hospital_partners.id,
+			hospital_partners.from_hospital_id,
+			hospital_partners.to_hospital_id,
+			hospital_partners.partner_type,
+			hospital_partners.status,
+			hospital_partners.created_at,
+			hospital_partners.updated_at,
 			from_hospital.id AS "from_hospital.id",
 			from_hospital.name AS "from_hospital.name",
 			to_hospital.id AS "to_hospital.id",
