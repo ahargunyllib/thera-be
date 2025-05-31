@@ -135,7 +135,7 @@ func (s *httpServer) MountRoutes(db *sqlx.DB, redis *redis.Client) {
 	adminService := adminSvc.NewAdminService(adminRepository, validator, bcrypt, jwt)
 	doctorService := doctorSvc.NewDoctorService(doctorRepository, validator, bcrypt, jwt)
 	patientService := patientSvc.NewPatientService(patientRepository, validator, uuid)
-	moodService := moodSvc.NewMoodService(moodRepository, validator)
+	moodService := moodSvc.NewMoodService(moodRepository, validator, ulid)
 	doctorScheduleService := doctorScheduleSvc.NewDoctorScheduleService(doctorScheduleRepository, validator)
 	doctorAppointmentService := doctorAppointmentSvc.NewDoctorAppointmentService(
 		doctorAppointmentRepository,
