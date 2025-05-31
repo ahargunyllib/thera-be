@@ -136,7 +136,7 @@ func (d *doctorScheduleRepository) GetDoctorScheduleByID(
 			doctor_schedules.doctor_id,
 			doctor_schedules.start_time,
 			doctor_schedules.end_time,
-			doctor_schedules.day_of_week,
+			doctor_schedules.day_of_week
 		FROM doctor_schedules
 		WHERE doctor_schedules.id = $1
 	`)
