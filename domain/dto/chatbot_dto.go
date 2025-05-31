@@ -70,5 +70,6 @@ type CreateMessageRequest struct {
 }
 
 type CreateMessageResponse struct {
-	Message MessageResponse `json:"message" validate:"required"`
+	Message MessageResponse `json:"message"`
+	Channel ChannelResponse `json:"channel"`
 }

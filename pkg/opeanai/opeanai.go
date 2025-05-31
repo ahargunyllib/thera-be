@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/ahargunyllib/thera-be/internal/infra/env"
+	"github.com/ahargunyllib/thera-be/pkg/log"
 	"github.com/openai/openai-go"
 	"github.com/openai/openai-go/option"
 )
@@ -23,7 +24,7 @@ type CustomOpenAIStruct struct {
 
 func getOpenAI() CustomOpenAIInterface {
 	client := openai.NewClient(
-		option.WithAPIKey(env.AppEnv.OpenAIKey),
+		option.WithAPIKey(env.AppEnv.OpenAIAPIKey),
 	)
 
 	return &CustomOpenAIStruct{
@@ -49,7 +50,18 @@ func (o *CustomOpenAIStruct) Chat(ctx context.Context, messages []Message) (*ope
 			openAIMessages[idx] = openai.AssistantMessage(msg.Content)
 			continue
 		}
+
+		if msg.Role == "system" {
+			openAIMessages[idx] = openai.SystemMessage(msg.Content)
+			continue
+		}
 	}
+
+	req.Messages = openAIMessages
+
+	log.Debug(log.CustomLogInfo{
+		"messages": req.Messages,
+	}, "[OpenAI][Chat] Sending messages to OpenAI")
 
 	res, err := o.client.Chat.Completions.New(ctx, req)
 	if err != nil {

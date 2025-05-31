@@ -56,18 +56,14 @@ func (c *chatBotService) CreateMessage(
 	}
 
 	historyMessages := make([]openai.Message, len(messages)+2)
-	historyMessages[1] = openai.Message{
+	historyMessages[0] = openai.Message{
 		Content: `
 			You are an assistant specialized in mental health consultation for doctors and medical professionals.
 			Your role is to provide empathetic, professional, and evidence-based advice
 				to help them navigate their mental health challenges.
 			Please ensure that all responses remain within the context of mental health and avoid discussing unrelated topics.
 		`,
-		Role: "assistant",
-	}
-	historyMessages[1] = openai.Message{
-		Content: req.Content,
-		Role:    "user",
+		Role: "system",
 	}
 	for i, message := range messages {
 		var role string
@@ -77,10 +73,14 @@ func (c *chatBotService) CreateMessage(
 			role = "assistant"
 		}
 
-		historyMessages[i+2] = openai.Message{
+		historyMessages[i+1] = openai.Message{
 			Content: message.Content,
 			Role:    role,
 		}
+	}
+	historyMessages[len(messages)+1] = openai.Message{
+		Content: req.Content,
+		Role:    "user",
 	}
 
 	chatRes, err := c.openai.Chat(ctx, historyMessages)
@@ -100,12 +100,6 @@ func (c *chatBotService) CreateMessage(
 		ChannelID: req.ChannelID,
 		Content:   chatRes.Choices[0].Message.Content,
 		Role:      enums.MessageRoleAssistantIdx,
-	}
-
-	err = c.chatBotRepo.CreateMessage(ctx, userMessage)
-	if err != nil {
-		_ = c.chatBotRepo.Rollback()
-		return dto.CreateMessageResponse{}, err
 	}
 
 	if isCreatingNewChannel {
@@ -139,6 +133,24 @@ func (c *chatBotService) CreateMessage(
 		}
 	}
 
+	err = c.chatBotRepo.CreateMessage(ctx, userMessage)
+	if err != nil {
+		_ = c.chatBotRepo.Rollback()
+		return dto.CreateMessageResponse{}, err
+	}
+
+	err = c.chatBotRepo.CreateMessage(ctx, assistantMessage)
+	if err != nil {
+		_ = c.chatBotRepo.Rollback()
+		return dto.CreateMessageResponse{}, err
+	}
+
+	channel, err := c.chatBotRepo.GetChannelByID(ctx, req.ChannelID)
+	if err != nil {
+		_ = c.chatBotRepo.Rollback()
+		return dto.CreateMessageResponse{}, err
+	}
+
 	err = c.chatBotRepo.Commit()
 	if err != nil {
 		_ = c.chatBotRepo.Rollback()
@@ -147,6 +159,7 @@ func (c *chatBotService) CreateMessage(
 
 	res := dto.CreateMessageResponse{
 		Message: dto.NewMessageResponse(assistantMessage),
+		Channel: dto.NewChannelResponse(channel),
 	}
 
 	return res, nil
