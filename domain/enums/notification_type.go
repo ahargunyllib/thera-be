@@ -15,11 +15,13 @@ type NotificationTypeValue struct {
 }
 
 const (
-	NotificationTypeUnknownIdx NotificationTypeIdx = 0
-	NotificationTypeBasicIdx   NotificationTypeIdx = 1
+	NotificationTypeUnknownIdx                   NotificationTypeIdx = 0
+	NotificationTypeBasicIdx                     NotificationTypeIdx = 1
+	NotificationTypeImproveNextDoctorScheduleIdx NotificationTypeIdx = 2
 
-	NotificationTypeUnknownKey NotificationTypeKey = "unknown"
-	NotificationTypeBasicKey   NotificationTypeKey = "basic"
+	NotificationTypeUnknownKey                   NotificationTypeKey = "unknown"
+	NotificationTypeBasicKey                     NotificationTypeKey = "basic"
+	NotificationTypeImproveNextDoctorScheduleKey NotificationTypeKey = "improve_next_doctor_schedule"
 )
 
 var (
@@ -36,17 +38,26 @@ var (
 		LongLabel:  map[string]string{"id": "Dasar", "en": "Basic"},
 		ShortLabel: map[string]string{"id": "Dasar", "en": "Basic"},
 	}
+
+	NotificationTypeImproveNextDoctorScheduleValue = NotificationTypeValue{
+		Idx:        int64(NotificationTypeImproveNextDoctorScheduleIdx),
+		Key:        string(NotificationTypeImproveNextDoctorScheduleKey),
+		LongLabel:  map[string]string{"id": "Tingkatkan Jadwal Dokter Berikutnya", "en": "Improve Next Doctor Schedule"},
+		ShortLabel: map[string]string{"id": "Tingkatkan Jadwal Dokter Berikutnya", "en": "Improve Next Doctor Schedule"},
+	}
 )
 
 var (
 	NotificationTypeMapIdx = map[NotificationTypeIdx]NotificationTypeValue{
-		NotificationTypeUnknownIdx: NotificationTypeUnknownValue,
-		NotificationTypeBasicIdx:   NotificationTypeBasicValue,
+		NotificationTypeUnknownIdx:                   NotificationTypeUnknownValue,
+		NotificationTypeBasicIdx:                     NotificationTypeBasicValue,
+		NotificationTypeImproveNextDoctorScheduleIdx: NotificationTypeImproveNextDoctorScheduleValue,
 	}
 
 	NotificationTypeMapKey = map[NotificationTypeKey]NotificationTypeValue{
-		NotificationTypeUnknownKey: NotificationTypeUnknownValue,
-		NotificationTypeBasicKey:   NotificationTypeBasicValue,
+		NotificationTypeUnknownKey:                   NotificationTypeUnknownValue,
+		NotificationTypeBasicKey:                     NotificationTypeBasicValue,
+		NotificationTypeImproveNextDoctorScheduleKey: NotificationTypeImproveNextDoctorScheduleValue,
 	}
 )
 

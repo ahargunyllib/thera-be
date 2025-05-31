@@ -7,6 +7,7 @@ import (
 
 	"github.com/ahargunyllib/thera-be/domain/dto"
 	"github.com/ahargunyllib/thera-be/domain/entity"
+	"github.com/ahargunyllib/thera-be/domain/enums"
 	"github.com/ahargunyllib/thera-be/pkg/log"
 )
 
@@ -61,6 +62,7 @@ func (ms *moodService) CreateMood(ctx context.Context, req dto.CreateMoodRequest
 					),
 					Valid: true,
 				},
+				Type: enums.NotificationTypeImproveNextDoctorScheduleIdx,
 			}
 
 			getDoctorError = ms.moodRepo.CreateMoodNotification(ctx, &notification)

@@ -14,8 +14,8 @@ func (mr *moodRepository) CreateMoodNotification(
 	var qb strings.Builder
 
 	qb.WriteString(`
-		INSERT INTO notifications (id, doctor_id, title, body)
-		VALUES (:id, :doctor_id, :title, :body)
+		INSERT INTO notifications (id, doctor_id, title, body, type)
+		VALUES (:id, :doctor_id, :title, :body, :type)
 	`)
 
 	_, err := mr.db.NamedExecContext(ctx, qb.String(), notification)
