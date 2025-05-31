@@ -1,0 +1,10 @@
+CREATE TABLE notifications (
+	id VARCHAR(26) PRIMARY KEY,
+  doctor_id VARCHAR(36) NULL REFERENCES doctors(id) ON DELETE CASCADE,
+	hospital_id INT NULL REFERENCES hospitals(id) ON DELETE CASCADE,
+  title VARCHAR(255) NOT NULL,
+  body TEXT NULL,
+  type INT NULL,
+  read_at TIMESTAMP NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

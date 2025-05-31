@@ -25,6 +25,9 @@ import (
 	moodController "github.com/ahargunyllib/thera-be/internal/app/mood/controller"
 	moodRepo "github.com/ahargunyllib/thera-be/internal/app/mood/repository"
 	moodSvc "github.com/ahargunyllib/thera-be/internal/app/mood/service"
+	notificationController "github.com/ahargunyllib/thera-be/internal/app/notification/controller"
+	notificationRepo "github.com/ahargunyllib/thera-be/internal/app/notification/repository"
+	notificationSvc "github.com/ahargunyllib/thera-be/internal/app/notification/service"
 	patientController "github.com/ahargunyllib/thera-be/internal/app/patient/controller"
 	patientRepo "github.com/ahargunyllib/thera-be/internal/app/patient/repository"
 	patientSvc "github.com/ahargunyllib/thera-be/internal/app/patient/service"
@@ -126,6 +129,7 @@ func (s *httpServer) MountRoutes(db *sqlx.DB, redis *redis.Client) {
 	doctorAppointmentRepository := doctorAppointmentRepo.NewDoctorAppointmentRepository(db)
 	chatBotRepository := chatBotRepository.NewChatBotRepository(db)
 	hospitalPartnerRepository := hospitalPartnerRepository.NewHospitalPartnerRepository(db)
+	notificationRepository := notificationRepo.NewNotificationRepository(db)
 
 	hospitalService := hospitalSvc.NewHospitalService(hospitalRepository, validator)
 	adminService := adminSvc.NewAdminService(adminRepository, validator, bcrypt, jwt)
@@ -140,6 +144,7 @@ func (s *httpServer) MountRoutes(db *sqlx.DB, redis *redis.Client) {
 	)
 	chatBotService := chatBotSvc.NewChatBotService(chatBotRepository, validator, uuid, openai)
 	hospitalPartnerService := hospitalPartnerSvc.NewHospitalPartnerService(hospitalPartnerRepository, validator, ulid)
+	notificationService := notificationSvc.NewNotificationService(notificationRepository, validator)
 
 	middleware := middlewares.NewMiddleware(jwt)
 
@@ -152,6 +157,7 @@ func (s *httpServer) MountRoutes(db *sqlx.DB, redis *redis.Client) {
 	doctorAppointmentController.InitDoctorAppointmentController(v1, doctorAppointmentService, middleware)
 	chatBotController.InitChatBotController(v1, chatBotService, middleware)
 	hospitalPartnerController.InitHospitalPartnerController(v1, hospitalPartnerService, middleware)
+	notificationController.InitNotificationController(v1, notificationService, middleware)
 
 	s.app.Use(func(c *fiber.Ctx) error {
 		return c.SendFile("./web/not-found.html")
