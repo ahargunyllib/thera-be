@@ -205,13 +205,16 @@ func (dss *doctorScheduleService) GetPreviewImprovedNextSchedule(
 		})
 	}
 
-	nextSchedule.StartTime = adjustedSchedule.StartTime
-	nextSchedule.EndTime = adjustedSchedule.EndTime
+	nextScheduleAfterImproved := nextSchedule // * WARN: SHALLOW COPY
+	nextScheduleAfterImproved.StartTime = adjustedSchedule.StartTime
+	nextScheduleAfterImproved.EndTime = adjustedSchedule.EndTime
 
 	nextScheduleResponse := dto.NewDoctorScheduleResponse(nextSchedule)
+	nextScheduleAfterImprovedResponse := dto.NewDoctorScheduleResponse(nextScheduleAfterImproved)
 
 	res := dto.GetPreviewImprovedNextScheduleResponse{
-		NextSchedule: nextScheduleResponse,
+		Schedule:     nextScheduleResponse,
+		NextSchedule: nextScheduleAfterImprovedResponse,
 	}
 
 	return res, nil

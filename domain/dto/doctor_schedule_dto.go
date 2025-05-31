@@ -67,5 +67,6 @@ type GetPreviewImprovedNextScheduleQuery struct {
 }
 
 type GetPreviewImprovedNextScheduleResponse struct {
+	Schedule     DoctorScheduleResponse `json:"schedule"`
 	NextSchedule DoctorScheduleResponse `json:"next_schedule"` // Next schedule for the doctor
 }
