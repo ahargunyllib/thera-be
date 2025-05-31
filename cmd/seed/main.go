@@ -9,6 +9,7 @@ import (
 
 	"github.com/ahargunyllib/thera-be/domain/contracts"
 	"github.com/ahargunyllib/thera-be/domain/entity"
+	"github.com/ahargunyllib/thera-be/domain/enums"
 	adminRepository "github.com/ahargunyllib/thera-be/internal/app/admin/repository"
 	doctorRepo "github.com/ahargunyllib/thera-be/internal/app/doctor/repository"
 	hospitalRepository "github.com/ahargunyllib/thera-be/internal/app/hospital/repository"
@@ -48,6 +49,10 @@ func main() {
 	case "admins":
 		seedAdmins(path, adminRepo, bcrypt, uuid)
 	case "doctors":
+		seedDoctors(path, doctorRepo, bcrypt, uuid)
+	case "all":
+		seedHospitals(path, hospitalRepo)
+		seedAdmins(path, adminRepo, bcrypt, uuid)
 		seedDoctors(path, doctorRepo, bcrypt, uuid)
 	default:
 		log.Error(log.CustomLogInfo{
@@ -202,7 +207,7 @@ func seedAdmins(path string, adminRepo contracts.AdminRepository, bcrypt bcrypt.
 			FullName:   fullName,
 			Email:      email,
 			Password:   hashedPassword,
-			Role:       roleInt,
+			Role:       enums.AdminRoleIdx(roleInt),
 			HospitalID: hospitalID,
 		}
 
@@ -286,7 +291,7 @@ func seedDoctors(path string, doctorRepo contracts.DoctorRepository, bcrypt bcry
 				String: phoneNumber,
 				Valid:  true,
 			},
-			Specialty:  speciality,
+			Specialty:  enums.DoctorSpecialtyIdx(speciality),
 			HospitalID: hospitalID,
 			Password:   hashedPassword,
 		}
